@@ -28,10 +28,21 @@
 			"remote": true
 		}
 	],
-	"ai": { 
+	"ai": {
 		"binding": "AI"
 	},
 	"analytics_engine_datasets": [
-		{ "binding": "ANALYTICS_EVENTS", "dataset": "analytics_events" }
+		{
+			"binding": "ANALYTICS_EVENTS",
+			"dataset": "analytics_events"
+		}
+	],
+	"kv_namespaces": [
+		{
+			"binding": "CHAT_HISTORY",
+			"id": "b5f7b4a524f842a0915779cb5e14bbae",
+			"preview_id": "38689e4327af4f4b9f5643c54336e474",
+			"remote": true
+		}
 	]
 }
