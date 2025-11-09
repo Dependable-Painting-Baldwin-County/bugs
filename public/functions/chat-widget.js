@@ -1,11 +1,3 @@
-/**
-/**
- * @file chat-widget.js
- * Embeddable painting assistant chat widget with streaming AI responses,
- * quick estimate form, and feedback tracking.
- *
- * Intent flags documented in code below.
- */
 (function(){
   const PHONE_DISPLAY = '(251) 423-5855';
   const ENDPOINT = '/api/chat';
@@ -91,7 +83,7 @@
   launch.addEventListener('click',open);
 
   textArea.addEventListener('input',()=>{ sendBtn.disabled=!textArea.value.trim(); });
-  
+
   /** Build contextual navigation chip links */
   /** @param {string} answer */
   function buildLinks(answer){
@@ -101,7 +93,7 @@
     if(!row.childNodes.length){ ['Services','Gallery','Contact'].forEach(l=>{ let u='/'; if(l==='Services') u='/services.html'; else if(l==='Gallery') u='/#gallery'; else if(l==='Contact') u='/contact-form.html'; row.appendChild(h('a',{href:u},[l])); }); }
     return row;
   }
-  
+
   /** Feedback buttons */
   /** @param {string} session @param {string} answer */
   function addFeedback(session, answer){

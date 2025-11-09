@@ -94,5 +94,10 @@
 	"github.copilot.chat.notebook.enhancedNextEditSuggestions.enabled": true,
 	"github.copilot.chat.notebook.followCellExecution.enabled": true,
 	"html.format.templating": true,
-	"html.format.indentInnerHtml": true
+	"html.format.indentInnerHtml": true,
+	"github.copilot.enable": {
+		"plaintext": true,
+		"markdown": true,
+		"scminput": true
+	}
 }

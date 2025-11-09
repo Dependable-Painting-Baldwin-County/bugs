@@ -1,5 +1,3 @@
-// Cloudflare Worker entrypoint
-// Removed incomplete stray AI client snippet that was causing syntax errors.
 interface Env {
 	PAINTERS_DB: D1Database;
 	CHAT_HISTORY: KVNamespace;
@@ -37,7 +35,7 @@ export default {
 		const url = new URL(request.url);
 
 		const corsHeaders = {
-			'Access-Control-Allow-Origin': 'https://dependablepainting.com',
+			'Access-Control-Allow-Origin': '*',
 			'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
 			'Access-Control-Allow-Headers': 'Content-Type',
 		};
@@ -47,16 +45,13 @@ export default {
 		}
 
 		try {
+			// Route API endpoints
 			if (url.pathname === '/api/track') {
 				return await handleTracking(request, env, corsHeaders);
 			}
 
 			if (url.pathname === '/api/chat') {
 				return await handleChat(request, env, corsHeaders);
-			}
-
-			if (url.pathname === '/api/search') {
-				return await handleSearch(request, env, corsHeaders);
 			}
 
 			if (url.pathname === '/api/chat/history') {
@@ -67,6 +62,7 @@ export default {
 				return await handleEstimate(request, env, corsHeaders);
 			}
 
+			// Serve static assets from public folder
 			return await env.ASSETS.fetch(request);
 
 		} catch (error) {
@@ -91,13 +87,15 @@ async function handleTracking(
 	try {
 		const data = await request.json() as TrackingEvent;
 
+		// Cloudflare automatically adds geolocation data to every request
 		const city = request.cf?.city as string || 'Unknown';
 		const country = request.cf?.country as string || 'Unknown';
-		const region = request.cf?.region as string || '';
 
 		const timestamp = new Date().toISOString();
 		const eventDate = timestamp.split('T')[0];
+
 		if (data.type === 'web_vital') {
+			// Track Core Web Vitals for performance monitoring
 			await env.PAINTERS_DB.prepare(`
 				INSERT INTO website_events (
 					date, session_id, event_type, page_url, timestamp,
@@ -116,6 +114,7 @@ async function handleTracking(
 			).run();
 
 		} else if (data.type === 'page_view') {
+			// Capture page views with UTM parameters from ads
 			const url = new URL(data.page_url || request.url);
 			const utmSource = url.searchParams.get('utm_source') || '';
 			const utmMedium = url.searchParams.get('utm_medium') || '';
@@ -140,6 +139,7 @@ async function handleTracking(
 			).run();
 
 		} else if (data.type === 'chat_feedback_up' || data.type === 'chat_feedback_down') {
+			// Track chat helpfulness feedback
 			await env.PAINTERS_DB.prepare(`
 				INSERT INTO website_events (
 					date, session_id, event_type, page_url, timestamp,
@@ -157,6 +157,7 @@ async function handleTracking(
 			).run();
 
 		} else {
+			// Generic event tracking for clicks, scrolls, etc
 			await env.PAINTERS_DB.prepare(`
 				INSERT INTO website_events (
 					date, session_id, event_type, page_url, timestamp,
@@ -174,6 +175,7 @@ async function handleTracking(
 			).run();
 		}
 
+		// Also write to Analytics Engine for real-time dashboards
 		if (env.ANALYTICS_EVENTS) {
 			env.ANALYTICS_EVENTS.writeDataPoint({
 				blobs: [
@@ -212,6 +214,7 @@ async function handleChat(
 	try {
 		const { message, session, page, stream } = await request.json() as ChatRequest;
 
+		// Special case: frontend requesting metadata after streaming completes
 		if (message === '[context]') {
 			return new Response(JSON.stringify({
 				intents: null,
@@ -221,6 +224,7 @@ async function handleChat(
 			});
 		}
 
+		// Load conversation history from KV to maintain context
 		const historyKey = `chat:${session}`;
 		const existingHistory = await env.CHAT_HISTORY.get(historyKey, 'json') as ChatMessage[] | null;
 		const conversationHistory = existingHistory || [];
@@ -230,6 +234,7 @@ async function handleChat(
 			content: message
 		});
 
+		// System prompt that teaches the AI about your business
 		const systemPrompt = `You are a helpful painting assistant for Dependable Painting, a family-owned painting contractor serving Baldwin and Mobile County, Alabama. You have over a decade of hands-on experience.
 
 Your expertise includes:
@@ -238,22 +243,22 @@ Your expertise includes:
 - Commercial painting projects
 - Sheetrock/drywall repair
 - Surface preparation and priming
-- Sherwin-Williams and Benjamin Moore products
+- Sherwin-Williams and Benjamin Moore products (emphasize Sherwin-Williams Duration, SuperPaint, and Emerald)
 - Weather-resistant coatings for Alabama's humid coastal climate
 - Color consultation and selection
 
 Your goals:
 1. Answer painting questions accurately and helpfully
-2. Recommend appropriate paint products (especially Sherwin-Williams Duration, SuperPaint, and Emerald lines)
+2. Recommend appropriate paint products for the Gulf Coast climate
 3. Explain proper surface preparation and application techniques
 4. Help customers understand the value of professional painting
-5. Ultimately encourage them to call or text for a free estimate: (251) 423-5855
+5. Gently encourage them to call or text for a free estimate: (251) 423-5855
 
-Keep responses concise and conversational (2-3 paragraphs max). Be friendly but professional. If someone asks about a specific project, try to understand their needs and gently suggest they call for a detailed estimate. Never make up information about pricing - always say pricing depends on project specifics and they should call for an accurate quote.
+Keep responses concise and conversational (2-3 paragraphs max). Be friendly but professional. If someone asks about a specific project, try to understand their needs and suggest they call for a detailed estimate. Never make up pricing information - always say pricing depends on project specifics and they should call for an accurate quote.
 
 Current page: ${page}`;
 
-		const aiResponse = await env.AI.run('@cf/meta/llama-3-8b-instruct', {
+		const aiResponse = await env.AI.run('@cf/meta/llama-4-scout-17b-16e-instruct', {
 			messages: [
 				{ role: 'system', content: systemPrompt },
 				...conversationHistory.map(msg => ({
@@ -264,6 +269,7 @@ Current page: ${page}`;
 			stream: stream || false
 		});
 
+		// Handle streaming responses
 		if (stream) {
 			const encoder = new TextEncoder();
 
@@ -280,12 +286,17 @@ Current page: ${page}`;
 								);
 							}
 						}
+
+						// Save conversation to KV after streaming completes
 						conversationHistory.push({
 							role: 'assistant',
 							content: fullResponse
 						});
+
+						// Keep only last 10 messages to stay under KV size limits
 						const trimmedHistory = conversationHistory.slice(-10);
 
+						// Store for 24 hours
 						await env.CHAT_HISTORY.put(
 							historyKey,
 							JSON.stringify(trimmedHistory),
@@ -312,6 +323,7 @@ Current page: ${page}`;
 			});
 		}
 
+		// Non-streaming fallback
 		const response = aiResponse as any;
 		const assistantMessage = response.response || 'I apologize, but I encountered an error. Please call (251) 423-5855 for assistance.';
 
@@ -327,6 +339,7 @@ Current page: ${page}`;
 			{ expirationTtl: 86400 }
 		);
 
+		// Simple keyword detection for showing estimate form
 		const wantsEstimate = /estimate|quote|pricing|cost|price|how much/i.test(message) ||
 			/schedule|book|appointment|visit/i.test(message);
 
@@ -377,6 +390,7 @@ async function handleChatHistory(
 			});
 		}
 
+		// Convert to format frontend expects (question/answer pairs)
 		const items = [];
 		for (let i = 0; i < history.length; i += 2) {
 			if (history[i] && history[i + 1]) {
@@ -418,6 +432,7 @@ async function handleEstimate(
 		const city = request.cf?.city as string || 'Unknown';
 		const country = request.cf?.country as string || 'Unknown';
 
+		// Store estimate request as special event type
 		await env.PAINTERS_DB.prepare(`
 			INSERT INTO website_events (
 				date, session_id, event_type, page_url, timestamp,
@@ -442,42 +457,6 @@ async function handleEstimate(
 	} catch (error) {
 		console.error('Estimate error:', error);
 		return new Response(JSON.stringify({ error: 'Failed to submit estimate' }), {
-			status: 500,
-			headers: { ...corsHeaders, 'Content-Type': 'application/json' }
-		});
-	}
-}
-
-async function handleSearch(
-	request: Request,
-	env: Env,
-	corsHeaders: Record<string, string>
-): Promise<Response> {
-	if (request.method !== 'POST') {
-		return new Response('Method not allowed', { status: 405 });
-	}
-
-	try {
-		const { query } = await request.json() as { query?: string };
-		if (!query || !query.trim()) {
-			return new Response(JSON.stringify({ error: 'Query required' }), {
-				status: 400,
-				headers: { ...corsHeaders, 'Content-Type': 'application/json' }
-			});
-		}
-
-		// Perform AI search using Cloudflare AI RAG index
-		const answer = await env.AI.autorag('twilight-bush-ef04').aiSearch({
-			query
-		});
-
-		return new Response(JSON.stringify({ query, answer }), {
-			headers: { ...corsHeaders, 'Content-Type': 'application/json' }
-		});
-
-	} catch (error) {
-		console.error('Search error:', error);
-		return new Response(JSON.stringify({ error: 'Search failed' }), {
 			status: 500,
 			headers: { ...corsHeaders, 'Content-Type': 'application/json' }
 		});
