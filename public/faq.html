@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-CLK9PTRD5N"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+  gtag('config', 'G-CLK9PTRD5N', { send_page_view: false, custom_map: { custom_parameter_1: 'session_id' } });
+  </script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Painting FAQs | Dependable Painting</title>
+  <meta name="description" content="Comprehensive painting FAQs: interior, exterior, cabinets, commercial and general business questions answered." />
+  <link rel="canonical" href="https://dependablepainting.work/faq.html" />
+  <!-- Standardized favicon & app icons -->
+  <link rel="icon" type="image/png" sizes="16x16" href="https://imagedelivery.net/VwxTcpKX2CusqbCCDB94Nw/ac674276-21f0-4ffc-3b1f-cede4d50db00/favicon16" />
+  <link rel="icon" type="image/png" sizes="32x32" href="https://imagedelivery.net/VwxTcpKX2CusqbCCDB94Nw/ac674276-21f0-4ffc-3b1f-cede4d50db00/favicon32" />
+  <link rel="icon" type="image/png" sizes="64x64" href="https://imagedelivery.net/VwxTcpKX2CusqbCCDB94Nw/ac674276-21f0-4ffc-3b1f-cede4d50db00/favicon64" />
+  <link rel="icon" type="image/png" sizes="192x192" href="https://imagedelivery.net/VwxTcpKX2CusqbCCDB94Nw/ac674276-21f0-4ffc-3b1f-cede4d50db00/icon192" />
+  <link rel="icon" type="image/png" sizes="512x512" href="https://imagedelivery.net/VwxTcpKX2CusqbCCDB94Nw/ac674276-21f0-4ffc-3b1f-cede4d50db00/icon512" />
+  <link rel="apple-touch-icon" sizes="180x180" href="https://imagedelivery.net/VwxTcpKX2CusqbCCDB94Nw/ac674276-21f0-4ffc-3b1f-cede4d50db00/icon180" />
+  <meta property="og:image" content="https://imagedelivery.net/VwxTcpKX2CusqbCCDB94Nw/ac674276-21f0-4ffc-3b1f-cede4d50db00/icon512" />
+  <meta name="theme-color" content="#ff3b3b" />
+  <link rel="preload" href="/styles/styles.css" as="style" onload="this.onload=null;this.rel='stylesheet'" />
+  <noscript><link rel="stylesheet" href="/styles/styles.css" /></noscript>
+  <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" as="style" crossorigin="anonymous" referrerpolicy="no-referrer" onload="this.onload=null;this.rel='stylesheet'" />
+  <noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" /></noscript>
+  <script type="application/ld+json">{
+    "@context":"https://schema.org",
+    "@type":"FAQPage",
+    "mainEntity":[
+      {"@type":"Question","name":"What deposit is required?","acceptedAnswer":{"@type":"Answer","text":"A 30% deposit on the day we start your job. Final payment only after walkthrough and your approval."}},
+      {"@type":"Question","name":"Which paint products do you offer?","acceptedAnswer":{"@type":"Answer","text":"Sherwin-Williams SuperPaint, Duration, Emerald. Product choice depends on durability, washability, budget and finish goals."}},
+      {"@type":"Question","name":"How do you protect my home during interior work?","acceptedAnswer":{"@type":"Answer","text":"We cover floors, mask fixtures, move & wrap large furniture, and create clean staging zones. Daily cleanup keeps areas tidy."}}
+    ]
+  }</script>
+  <style>
+    .faq-page-accordion{max-width:1000px;margin:2rem auto;padding:0 1rem;}
+    .faq-page-accordion h1{margin-bottom:1.5rem;text-align:center;color:#ff3b3b;font-size:2.2rem;}
+    .faq-section{margin-bottom:2.5rem;}
+    .faq-section h2{font-size:1.4rem;margin:1.2rem 0 .8rem;color:#ff3b3b;border-bottom:1px solid #222;padding-bottom:.4rem;}
+    .faq-item{border:1px solid #1e1e1e;background:#101010;border-radius:12px;margin:.5rem 0;box-shadow:0 4px 18px -6px rgba(0,0,0,.55);}
+    .faq-item button{background:none;color:#fff;font:inherit;font-weight:600;width:100%;text-align:left;padding:1rem 1.2rem;cursor:pointer;border:none;display:flex;justify-content:space-between;align-items:center;}
+    .faq-item button span.indicator{transition:.3s transform;}
+    .faq-item[open] button span.indicator{transform:rotate(90deg);}    
+    .faq-item .answer{padding:0 1.2rem 1.2rem;font-size:.95rem;line-height:1.5;color:#ddd;}
+    .faq-links a{display:inline-block;margin:.25rem .5rem .25rem 0;font-size:.8rem;background:#181818;padding:.4rem .7rem;border-radius:6px;text-decoration:none;color:#ff3b3b;border:1px solid #222;}
+    .faq-links a:hover{background:#ff3b3b;color:#000;}
+    /* Hours popup styles */
+    #hoursPopup {
+      position: absolute;
+      top: 64px;
+      right: 1.25rem;
+      background: #111;
+      color: #fff;
+      border: 1px solid #262626;
+      border-radius: 8px;
+      padding: .9rem 1rem;
+      font-size: .95rem;
+      box-shadow: 0 10px 28px -8px rgba(0,0,0,.6);
+      display: none; /* hidden by default */
+      min-width: 220px;
+      z-index: 1000;
+    }
+    #hoursPopup strong {
+      color: #ff3b3b;
+      display: block;
+      margin-bottom: .25rem;
+      font-size: 1rem;
+    }
+    #hoursPopup.open {
+      display: block;
+    }
+    .nav-icons .hours-toggle {
+      cursor: pointer;
+    }
+    @media (max-width: 768px) {
+      #hoursPopup {
+        right: .75rem;
+        left: .75rem;
+      }
+    }
+  </style>
+</head>
+<body data-service="faq">
+  <header class="site-header">
+  <div class="brand"><a href="/" aria-label="Dependable Painting Home"><svg width="40" height="40" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Dependable Painting logo"><title>Dependable Painting Logo</title><rect width="64" height="64" rx="8" fill="#161616"/><path d="M14 46l18-28 10 15 8-6 0 19H14z" fill="#ff3b3b"/><path d="M24 46h16v-8l-6-9-10 17z" fill="#fff" opacity="0.9"/><circle cx="22" cy="18" r="4" fill="#ff3b3b" stroke="#fff" stroke-width="2"/></svg></a><span>Dependable Painting</span></div>
+    <nav class="primary-nav nav-desktop" aria-label="Primary">
+      <a href="/">Home</a>
+      <div class="nav-item-has-children">
+        <a href="/services.html" aria-haspopup="true" aria-expanded="false">Services</a>
+        <div class="submenu" role="menu" aria-label="Services submenu">
+          <div class="submenu-group" aria-label="Core Services">
+            <a href="/exterior-painting.html" role="menuitem">Exterior Painting</a>
+            <a href="/interior-painting.html" role="menuitem">Interior Painting</a>
+            <a href="/commercial-painting.html" role="menuitem">Commercial Painting</a>
+            <a href="/cabinet-painting.html" role="menuitem">Cabinet Painting</a>
+            <a href="/sheetrock-repair.html" role="menuitem">Drywall Repair</a>
+          </div>
+          <hr style="border-top:1px solid #333;margin:6px 0;">
+          <div class="submenu-group" aria-label="Exterior Sub-services">
+            <a href="/stucco-brick-painting.html" role="menuitem">Stucco & Brick</a>
+            <a href="/wood-siding.html" role="menuitem">Wood Siding</a>
+            <a href="/deck-fence-painting.html" role="menuitem">Decks & Fences</a>
+            <a href="/metal-painting.html" role="menuitem">Metal Surfaces</a>
+            <a href="/exterior-repair.html" role="menuitem">Exterior Repair</a>
+            <a href="/furniture-painting.html" role="menuitem">Outdoor Furniture</a>
+          </div>
+          <hr style="border-top:1px solid #333;margin:6px 0;">
+          <a href="/services.html" role="menuitem" style="font-style:italic;">View All Services</a>
+        </div>
+      </div>
+      <a href="/reviews.html">Reviews</a>
+      <a href="/contact-form.html">Contact</a>
+      <a href="/booking.html">Booking</a>
+    </nav>
+  </header>
+  <main class="faq-page-accordion">
+    <h1>Frequently Asked Questions</h1>
+    
+    <section class="faq-card-widget-section" aria-labelledby="gen-heading">
+      <h2 id="gen-heading">General Business</h2>
+    
+      <div class="faq-card-widget">
+        <details>
+          <summary>
+            <span class="faq-icon fas fa-file-invoice-dollar"></span>
+            <span class="faq-question-text">What deposit is required?</span>
+            <span class="faq-indicator">❯</span>
+          </summary>
+          <div class="faq-answer">
+            <p>We collect a 30% deposit on project start day. No upfront booking fee. Final payment only after walkthrough.
+            </p>
+          </div>
+        </details>
+      </div>
+    
+      <div class="faq-card-widget">
+        <details>
+          <summary>
+            <span class="faq-icon fas fa-shield-alt"></span>
+            <span class="faq-question-text">Are you licensed and insured?</span>
+            <span class="faq-indicator">❯</span>
+          </summary>
+          <div class="faq-answer">
+            <p>Yes, fully licensed & insured in Alabama (general liability + workers comp). Documentation available upon
+              request.</p>
+          </div>
+        </details>
+      </div>
+    
+      <div class="faq-card-widget">
+        <details>
+          <summary>
+            <span class="faq-icon fas fa-map-marker-alt"></span>
+            <span class="faq-question-text">What areas do you serve?</span>
+            <span class="faq-indicator">❯</span>
+          </summary>
+          <div class="faq-answer">
+            <p>Fairhope, Daphne, Spanish Fort, Bay Minette, Mobile and surrounding Baldwin & Mobile County communities.</p>
+          </div>
+        </details>
+      </div>
+    
+      <div class="faq-card-widget">
+        <details>
+          <summary>
+            <span class="faq-icon fas fa-clipboard-list"></span>
+            <span class="faq-question-text">How do estimates work?</span>
+            <span class="faq-indicator">❯</span>
+          </summary>
+          <div class="faq-answer">
+            <p>We offer free same-day or next-day estimates. After scope review you receive a written proposal detailing
+              prep, products, timeline and price.</p>
+          </div>
+        </details>
+      </div>
+    </section>
+    
+    <section class="faq-card-widget-section" aria-labelledby="interior-heading">
+      <h2 id="interior-heading">Interior Painting</h2>
+      <div class="faq-card-widget">
+        <details>
+          <summary>
+            <span class="faq-icon fas fa-paint-roller"></span>
+            <span class="faq-question-text">Which paint lines can I choose?</span>
+            <span class="faq-indicator">❯</span>
+          </summary>
+          <div class="faq-answer">
+            <p>Sherwin-Williams SuperPaint (value), Duration (durability), Emerald (premium). We match sheen and product to
+              usage (e.g. Emerald on kitchens/baths for scrubbability).</p>
+          </div>
+        </details>
+      </div>
+      <div class="faq-card-widget">
+        <details>
+          <summary>
+            <span class="faq-icon fas fa-couch"></span>
+            <span class="faq-question-text">Do I need to move furniture?</span>
+            <span class="faq-indicator">❯</span>
+          </summary>
+          <div class="faq-answer">
+            <p>Please remove fragile/personal items. We handle large furniture, cover floors/fixtures, and establish clean
+              staging areas.</p>
+          </div>
+        </details>
+      </div>
+      <div class="faq-card-widget">
+        <details>
+          <summary>
+            <span class="faq-icon fas fa-clock"></span>
+            <span class="faq-question-text">How long does a typical room take?</span>
+            <span class="faq-indicator">❯</span>
+          </summary>
+          <div class="faq-answer">
+            <p>Most 12'x12' rooms: 1–2 days including repairs, priming, two finish coats, detail touch-ups and cleanup.</p>
+          </div>
+        </details>
+      </div>
+      <div class="faq-card-widget">
+        <details>
+          <summary>
+            <span class="faq-icon fas fa-wind"></span>
+            <span class="faq-question-text">Are fumes an issue?</span>
+            <span class="faq-indicator">❯</span>
+          </summary>
+          <div class="faq-answer">
+            <p>We use low or zero VOC paints and promote ventilation. Odor dissipates quickly so spaces are usable soon
+              after drying.</p>
+          </div>
+        </details>
+      </div>
+    </section>
+    
+    <section class="faq-card-widget-section" aria-labelledby="exterior-heading">
+      <h2 id="exterior-heading">Exterior Painting</h2>
+      <div class="faq-card-widget">
+        <details>
+          <summary>
+            <span class="faq-icon fas fa-tools"></span>
+            <span class="faq-question-text">How do you prepare exterior surfaces?</span>
+            <span class="faq-indicator">❯</span>
+          </summary>
+          <div class="faq-answer">
+            <p>Wash, scrape failing paint, sand feather edges, caulk gaps, prime bare & tannin-prone wood, spot repair rot
+              before finish coats.</p>
+          </div>
+        </details>
+      </div>
+      <div class="faq-card-widget">
+        <details>
+          <summary>
+            <span class="faq-icon fas fa-cloud-sun-rain"></span>
+            <span class="faq-question-text">What about weather delays?</span>
+            <span class="faq-indicator">❯</span>
+          </summary>
+          <div class="faq-answer">
+            <p>We monitor humidity, temperature & rain windows; adjust schedule to ensure proper curing and coating
+              performance.</p>
+          </div>
+        </details>
+      </div>
+      <div class="faq-card-widget">
+        <details>
+          <summary>
+            <span class="faq-icon fas fa-brush"></span>
+            <span class="faq-question-text">Which exterior paint lines do you use?</span>
+            <span class="faq-indicator">❯</span>
+          </summary>
+          <div class="faq-answer">
+            <p>Duration & Emerald for superior film integrity and mildew resistance; specialty elastomeric or stain systems
+              where required.</p>
+          </div>
+        </details>
+      </div>
+    </section>
+    
+    <section class="faq-card-widget-section" aria-labelledby="cabinets-heading">
+      <h2 id="cabinets-heading">Cabinet Painting</h2>
+      <div class="faq-card-widget">
+        <details>
+          <summary>
+            <span class="faq-icon fas fa-spray-can"></span>
+            <span class="faq-question-text">What is your cabinet process?</span>
+            <span class="faq-indicator">❯</span>
+          </summary>
+          <div class="faq-answer">
+            <p>Label & remove doors, clean/degrease, sand + vacuum, prime with bonding primer, spray multiple enamel coats,
+              cure, reassemble with new hardware (optional).</p>
+          </div>
+        </details>
+      </div>
+      <div class="faq-card-widget">
+        <details>
+          <summary>
+            <span class="faq-icon fas fa-check-circle"></span>
+            <span class="faq-question-text">Will the finish last?</span>
+            <span class="faq-indicator">❯</span>
+          </summary>
+          <div class="faq-answer">
+            <p>Yes. Proper prep + high-quality enamel yields a hard, washable surface resistant to normal kitchen wear.</p>
+          </div>
+        </details>
+      </div>
+      <div class="faq-card-widget">
+        <details>
+          <summary>
+            <span class="faq-icon fas fa-home"></span>
+            <span class="faq-question-text">Can I stay in the home during cabinet work?</span>
+            <span class="faq-indicator">❯</span>
+          </summary>
+          <div class="faq-answer">
+            <p>Absolutely. We create contained spray areas & ventilation setups minimizing disruption and odor.</p>
+          </div>
+        </details>
+      </div>
+    </section>
+    
+    <section class="faq-card-widget-section" aria-labelledby="commercial-heading">
+      <h2 id="commercial-heading">Commercial Painting</h2>
+      <div class="faq-card-widget">
+        <details>
+          <summary>
+            <span class="faq-icon fas fa-business-time"></span>
+            <span class="faq-question-text">How do you minimize business disruption?</span>
+            <span class="faq-indicator">❯</span>
+          </summary>
+          <div class="faq-answer">
+            <p>Flexible scheduling (evenings/weekends), sectioned work zones, and clear daily communication to keep
+              operations running.</p>
+          </div>
+        </details>
+      </div>
+      <div class="faq-card-widget">
+        <details>
+          <summary>
+            <span class="faq-icon fas fa-hard-hat"></span>
+            <span class="faq-question-text">Do you handle safety & compliance?</span>
+            <span class="faq-indicator">❯</span>
+          </summary>
+          <div class="faq-answer">
+            <p>We follow OSHA safe practices, carry insurance, and can coordinate with facilities for access, security &
+              permitting needs.</p>
+          </div>
+        </details>
+      </div>
+    </section>
+    
+    <section class="faq-section" aria-labelledby="links-heading">
+      <h2 id="links-heading">Explore More</h2>
+      <div class="faq-links">
+        <a href="/interior-painting.html">Interior Painting</a>
+        <a href="/exterior-painting.html">Exterior Painting</a>
+        <a href="/cabinet-painting.html">Cabinet Painting</a>
+        <a href="/commercial-painting.html">Commercial Painting</a>
+        <a href="/services.html">All Services</a>
+        <a href="/contact-form.html">Request Estimate</a>
+      </div>
+    </section>
+  </main>
+<footer class="site-footer">
+  <div class="footer-top">
+    <div class="footer-brand">
+      <svg width="40" height="40" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Dependable Painting logo"><title>Dependable Painting Logo</title><rect width="64" height="64" rx="8" fill="#161616"/><path d="M14 46l18-28 10 15 8-6 0 19H14z" fill="#ff3b3b"/><path d="M24 46h16v-8l-6-9-10 17z" fill="#fff" opacity="0.9"/><circle cx="22" cy="18" r="4" fill="#ff3b3b" stroke="#fff" stroke-width="2"/></svg>
+      <span class="footer-rating" aria-label="Average rating 4.6 out of 5 stars">4.6 ★ <small>(31 reviews)</small></span>
+    </div>
+    <nav class="footer-nav" aria-label="Footer">
+      <a href="/services.html">Services</a>
+      <a href="/about.html">About</a>
+      <a href="/reviews.html">Reviews</a>
+      <a href="/contact-form.html">Contact</a>
+      <a href="/privacy.html">Privacy</a>
+      <a href="/sitemap.xml">Sitemap</a>
+    </nav>
+  </div>
+  <p class="footer-meta">© <span id="current-year"></span> Dependable Painting • <a href="tel:+12514235855" class="contact-link">(251) 423-5855</a> • Bay Minette, AL</p>
+</footer>
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    document.getElementById('current-year').textContent = new Date().getFullYear() + '';
+    // OLD ACCORDION LOGIC REMOVED FROM HERE
+  });
+</script>
+
+<script src="/functions/global.js" defer></script>
+<script src="/functions/analytics.js" defer></script>
+<script src="/functions/chat-widget.js" defer></script>
+<script src="/functions/faq.js" defer></script>
+</body>
+</html>

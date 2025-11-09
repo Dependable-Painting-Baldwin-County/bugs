@@ -1,50 +1,37 @@
-/**
- * For more details on how to configure Wrangler, refer to:
- * https://developers.cloudflare.com/workers/wrangler/configuration/
- */
 {
 	"$schema": "node_modules/wrangler/config-schema.json",
 	"name": "bugs",
 	"main": "src/index.ts",
-	"compatibility_date": "2025-11-07",
+	"compatibility_date": "2025-09-01",
 	"compatibility_flags": [
-		"global_fetch_strictly_public"
+		"global_fetch_strictly_public",
+		"nodejs_compat",
+		"nodejs_compat_populate_process_env",
+		"enable_nodejs_process_v2",
+		"enable_nodejs_http_modules",
+		"cache_no_cache_enabled"
 	],
+	"placement": {
+		"mode": "smart"
+	},
 	"assets": {
-		// The path to the directory containing the `index.html` file to be served at `/`
 		"directory": "./public"
 	},
 	"observability": {
 		"enabled": true
-	}
-	/**
-	 * Smart Placement
-	 * Docs: https://developers.cloudflare.com/workers/configuration/smart-placement/#smart-placement
-	 */
-	// "placement": { "mode": "smart" }
-	/**
-	 * Bindings
-	 * Bindings allow your Worker to interact with resources on the Cloudflare Developer Platform, including
-	 * databases, object storage, AI inference, real-time communication and more.
-	 * https://developers.cloudflare.com/workers/runtime-apis/bindings/
-	 */
-	/**
-	 * Environment Variables
-	 * https://developers.cloudflare.com/workers/wrangler/configuration/#environment-variables
-	 */
-	// "vars": { "MY_VARIABLE": "production_value" }
-	/**
-	 * Note: Use secrets to store sensitive data.
-	 * https://developers.cloudflare.com/workers/configuration/secrets/
-	 */
-	/**
-	 * Static Assets
-	 * https://developers.cloudflare.com/workers/static-assets/binding/
-	 */
-	// "assets": { "directory": "./public/", "binding": "ASSETS" }
-	/**
-	 * Service Bindings (communicate between multiple Workers)
-	 * https://developers.cloudflare.com/workers/wrangler/configuration/#service-bindings
-	 */
-	// "services": [{ "binding": "MY_SERVICE", "service": "my-service" }]
+	},
+	"d1_databases": [
+		{
+			"binding": "PAINTERS_DB",
+			"database_name": "PAINTERS_DB",
+			"database_id": "986cf679-e4ed-4788-b53a-a06342b178d4",
+			"remote": true
+		}
+	],
+	"ai": { 
+		"binding": "AI"
+	},
+	"analytics_engine_datasets": [
+		{ "binding": "ANALYTICS_EVENTS", "dataset": "analytics_events" }
+	]
 }
