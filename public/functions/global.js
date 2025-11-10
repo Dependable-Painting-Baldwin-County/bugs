@@ -93,7 +93,7 @@
         }
       }
       if(footerRatings.length){
-        const w = /** @type {any} */(window);
+        const w =  @type {any} */(window);
         let avg = 0; let count = 0;
         if(Array.isArray(w.REVIEWS) && w.REVIEWS.length){
           const nums = w.REVIEWS.map(r => typeof r.rating === 'number' ? r.rating : 0).filter(n => n>0);

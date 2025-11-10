@@ -1,7 +1,8 @@
 // Centralized reviews + gallery + Swiper setup
+
 /**
  * Global declarations for linting (non-module script)
- * @typedef {{name:string;rating:number;comment:string;date?:string}} Review
+ * @typedef {{body:string;author:string;service?:string}} Review
  * @typedef {{el:HTMLElement}} SwiperInstance
  * @typedef {new (selector:string, opts:any) => SwiperInstance} SwiperConstructor
  * @type {any}
@@ -11,13 +12,12 @@ var __globals;
 // Declare known globals for TypeScript when type-checking JS
 /* global Swiper */
 (function(){
-  /** @typedef {{ body:string, author:string, service?:string }} Review */
-  /** @type {Review[]} */
-  /** @type {any} */(window)['REVIEWS'] = Array.isArray(/** @type {any} */(window)['REVIEWS']) ? /** @type {any} */(window)['REVIEWS'] : []; //
-  /** Swiper global (from CDN) */
+   // REVIEWS global setup
+  window.REVIEWS = Array.isArray(window.REVIEWS) ? window.REVIEWS : []; //
+  // Swiper global (from CDN)
   // eslint-disable-next-line no-unused-vars
   /** @type {SwiperConstructor | undefined} */
-  const SwiperCtor = /** @type {any} */(window)['Swiper']; //
+  const SwiperCtor = window.Swiper; //
   // Small HTML escaper to prevent accidental injection in dynamic markup.
   /** @param {any} v */
   function esc(v){ //
@@ -32,8 +32,7 @@ var __globals;
   function initReviews(){ //
     if(typeof window === 'undefined'){ return; } //
   const existing = document.querySelector('#reviews .testimonial-swiper'); //
-  /** @type {HTMLElement|null} */
-  let host = existing ? /** @type {HTMLElement} */(existing) : null; //
+  let host = existing instanceof HTMLElement ? existing : null; //
     // If no #reviews section exists, dynamically create one (less common, but provides fallback)
     if(!host){ //
       const sec=document.createElement('section'); //
@@ -51,9 +50,8 @@ var __globals;
     // Add fallback horizontal scroll style while waiting for Swiper
     host.classList.add('dp-swiper-pending'); //
     wrap.innerHTML=''; //
-  /** @type {any[]} */
-  /** @type {Review[]} */
-  const list = Array.isArray(/** @type {any} */(window)['REVIEWS']) ? /** @type {Review[]} */(/** @type {any} */(window)['REVIEWS']) : []; //
+   /** @type {Review[]} */
+  const list = window.REVIEWS; //
     if(!list.length){ //
       const empty=document.createElement('div'); //
       empty.className='swiper-slide'; //
@@ -69,7 +67,7 @@ var __globals;
       });
     }
 
-  /** @param {number} attempt */
+   /** @param {number} attempt */
   function trySwiper(attempt=0){ //
   if(typeof SwiperCtor === 'undefined'){ //
         if(attempt<40) return setTimeout(()=>trySwiper(attempt+1), 125); // retry up to ~5s //
@@ -97,7 +95,7 @@ var __globals;
     trySwiper(); //
   }
 
-  /** @param {number} attempt */
+   /** @param {number} attempt */
   function initGallery(attempt=0){ //
   const gallery=document.querySelector('.gallery-swiper'); //
     if(!gallery) return; //
@@ -125,7 +123,7 @@ var __globals;
 
   // initFAQ function REMOVED
 
-  /** @param {() => void} fn */
+   /** @param {() => void} fn */
   function ready(fn){ if(document.readyState==='loading') document.addEventListener('DOMContentLoaded', fn); else fn(); } //
   ready(()=>{ initReviews(); initGallery(); /* initFAQ() call REMOVED */ }); //
 })();

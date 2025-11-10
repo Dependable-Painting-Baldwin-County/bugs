@@ -1,10 +1,10 @@
-/**
+
  * @file faq.js
  * Enhances keyboard accessibility for the <details>/<summary> FAQ widget.
  */
 (function () {
-  /** Run callback when DOM is ready */
-  /** @param {() => void} fn */
+   Run callback when DOM is ready */
+   @param {() => void} fn */
   function ready(fn) {
     if (document.readyState !== 'loading') {
       fn();
@@ -15,13 +15,13 @@
 
   ready(function () {
     // Select all summary elements within the new FAQ card widgets
-    /** @type {NodeListOf<HTMLElement>} */
+     @type {NodeListOf<HTMLElement>} */
     const summaries = document.querySelectorAll('.faq-card-widget details summary'); //
 
     summaries.forEach(summary => { //
       // Add keydown listener for Enter and Space keys
       summary.addEventListener('keydown', (event) => { //
-        const keyboardEvent = /** @type {KeyboardEvent} */ (event);
+        const keyboardEvent =  @type {KeyboardEvent} */ (event);
         // Check if the pressed key is Enter (key code 13 or key "Enter")
         // or Space (key code 32 or key " ")
         if (keyboardEvent.key === 'Enter' || keyboardEvent.key === ' ' || keyboardEvent.keyCode === 13 || keyboardEvent.keyCode === 32) { //

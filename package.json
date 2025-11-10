@@ -5,9 +5,7 @@
 	"scripts": {
 		"deploy": "wrangler deploy",
 		"dev": "wrangler dev",
-		"start": "wrangler dev",
-		"test": "vitest",
-		"cf-typegen": "wrangler types"
+		"cf": "wrangler types"
 	},
 	"devDependencies": {
 		"@cloudflare/puppeteer": "^1.0.4",

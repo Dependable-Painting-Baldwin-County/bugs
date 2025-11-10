@@ -1,25 +1,30 @@
+import { D1Database } from '@cloudflare/workers-types/experimental/d1';
+import { IncomingRequestCf } from 'cloudflare-workers-types/global';
+import { Ai } from '@cloudflare/ai-types';
+import { AnalyticsEngineDataset } from '@cloudflare/analytics-engine-types/experimental/analytics_engine_dataset';
+import { Fetcher } from '@cloudflare/workers-types/experimental/fetcher';
 interface Env {
 	PAINTERS_DB: D1Database;
 	CHAT_HISTORY: KVNamespace;
 	AI: Ai;
-	ANALYTICS_EVENTS: AnalyticsEngineDataset;
+	ANALYTICS_EVENTS?: AnalyticsEngineDataset;
 	ASSETS: Fetcher;
 }
 
 interface TrackingEvent {
 	type: string;
-	session_id?: string;
-	page_url?: string;
-	event_type?: string;
-	metric?: string;
-	value?: number;
-	rating?: string;
-	session?: string;
-	page?: string;
+	session_id: string;
+	page_url: string;
+	event_type: string;
+	metric: string;
+	value: number;
+	rating: string;
+	session: string;
+	page: string;
 }
 
 interface ChatMessage {
-	role: 'user' | 'assistant';
+	role: 'assistant' | 'user';
 	content: string;
 }
 
@@ -75,6 +80,10 @@ export default {
 	}
 };
 
+function getRequestCf(request: Request): IncomingRequestCf | undefined {
+	return (request as Request & { cf?: IncomingRequestCf }).cf;
+}
+
 async function handleTracking(
 	request: Request,
 	env: Env,
@@ -87,9 +96,9 @@ async function handleTracking(
 	try {
 		const data = await request.json() as TrackingEvent;
 
-		// Cloudflare automatically adds geolocation data to every request
-		const city = request.cf?.city as string || 'Unknown';
-		const country = request.cf?.country as string || 'Unknown';
+		const cf = getRequestCf(request);
+		const city = cf?.city ?? 'Unknown';
+		const country = cf?.country ?? 'Unknown';
 
 		const timestamp = new Date().toISOString();
 		const eventDate = timestamp.split('T')[0];
@@ -339,9 +348,7 @@ Current page: ${page}`;
 			{ expirationTtl: 86400 }
 		);
 
-		// Simple keyword detection for showing estimate form
-		const wantsEstimate = /estimate|quote|pricing|cost|price|how much/i.test(message) ||
-			/schedule|book|appointment|visit/i.test(message);
+		const wantsEstimate = false;
 
 		return new Response(JSON.stringify({
 			reply: assistantMessage,
@@ -427,10 +434,12 @@ async function handleEstimate(
 	try {
 		const data = await request.json() as any;
 
+		const cf = getRequestCf(request);
+		const city = cf?.city ?? 'Unknown';
+		const country = cf?.country ?? 'Unknown';
+
 		const timestamp = new Date().toISOString();
 		const eventDate = timestamp.split('T')[0];
-		const city = request.cf?.city as string || 'Unknown';
-		const country = request.cf?.country as string || 'Unknown';
 
 		// Store estimate request as special event type
 		await env.PAINTERS_DB.prepare(`
