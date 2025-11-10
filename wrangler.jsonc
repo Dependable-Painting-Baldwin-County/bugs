@@ -1,5 +1,4 @@
 {
-  "$schema": "node_modules/wrangler/config-schema.json",
   "name": "bugs",
   "main": "src/index.ts",
   "compatibility_date": "2025-09-01",
@@ -11,6 +10,9 @@
     "enable_nodejs_http_modules",
     "cache_no_cache_enabled"
   ],
+  "routes": [
+    { "pattern": "dependablepainting.work", "custom_domain": true }
+  ],
   "placement": {
     "mode": "smart"
   },
@@ -21,6 +23,8 @@
   "observability": {
     "enabled": true
   },
+  "vars": {
+    "ENVIRONMENT": "env.production",
   "d1_databases": [
     {
       "binding": "PAINTERS_DB",
@@ -29,9 +33,20 @@
       "remote": true
     }
   ],
-  "ai": {
-    "binding": "AI"
-  },
+  "vectorize": [
+    {
+      "binding": "VECTORIZE",
+      "index_name": "paint-vector",
+      "remote": true
+    }
+  ],  
+  "ai": [
+    {
+      "binding": "AI",
+      "model": "gpt-5",
+      "provider": "openai"
+    }
+  ],    
   "analytics_engine_datasets": [
     {
       "binding": "ANALYTICS_EVENTS",
@@ -46,4 +61,4 @@
       "remote": true
     }
   ]
-}
+}}
