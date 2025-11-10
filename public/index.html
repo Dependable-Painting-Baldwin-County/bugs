@@ -72,8 +72,6 @@
         ],
         "sameAs": [
           "https://maps.app.goo.gl/RwCxY6CexKRaWz98A",
-          "https://www.facebook.com/dependablepainting",
-          "https://www.instagram.com/dependablepainting"
         ],
         "aggregateRating": { "@type":"AggregateRating","ratingValue":"4.6","reviewCount":"31","bestRating":"5","worstRating":"1" },
         "hasOfferCatalog": {
@@ -116,26 +114,13 @@
       </a>
       <span>Dependable Painting</span>
     </div>
-    <nav class="primary-nav nav-desktop" aria-label="Primary">
-      <div class="nav-item-has-children">
-        <a href="/services.html" aria-haspopup="true" aria-expanded="false">Services</a>
-        <div class="submenu" role="menu" aria-label="Services submenu">
-          <a href="/interior-painting.html" role="menuitem">Interior Painting</a>
-          <a href="/exterior-painting.html" role="menuitem">Exterior Painting</a>
-          <a href="/cabinet-painting.html" role="menuitem">Cabinet Painting</a>
-          <a href="/commercial-painting.html" role="menuitem">Commercial Painting</a>
-          <a href="/sheetrock-repair.html" role="menuitem">Drywall Repair</a>
-        </div>
-      </div>
-      <a href="/about.html">About</a>
-      <a href="/reviews.html">Reviews</a>
-      <a href="/privacy.html">Privacy</a>
-    </nav>
+    <!-- Primary desktop nav removed intentionally; universal side drawer used instead -->
     <div class="nav-icons">
-      <!-- Hours (clock) -->
       <button class="hours-toggle" type="button" title="Hours" aria-label="View business hours" aria-expanded="false" aria-controls="hoursPopup">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-          <path d="M12 2.25a9.75 9.75 0 1 0 0 19.5 9.75 9.75 0 0 0 0-19.5Zm.75 5.25a.75.75 0 1 0-1.5 0v5.06c0 .24.12.47.33.61l3.5 2.33a.75.75 0 1 0 .84-1.24l-3.17-2.1V7.5Z"></path>
+        <!-- Outline clock icon -->
+        <svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="9" />
+          <path d="M12 7v5l3 2" />
         </svg>
       </button>
 
@@ -163,11 +148,11 @@
         </svg>
       </a>
 
-      <!-- Hamburger -->
-      <button class="hamburger" id="hamburger" type="button" aria-label="Open Menu" aria-controls="mobileMenu" aria-expanded="false">
-        <span></span><span></span><span></span>
-      </button>
     </div>
+    <!-- Hamburger moved outside icon cluster for clearer separation -->
+    <button class="hamburger" id="hamburger" type="button" aria-label="Open Menu" aria-controls="mobileMenu" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
     <div id="hoursPopup" role="dialog" aria-label="Business Hours" aria-hidden="true">
       <strong>Hours</strong><br>
       Mon–Fri: 8:00a–5:30p<br> Sat: by appt • Sun: closed

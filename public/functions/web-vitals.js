@@ -1,13 +1,4 @@
-* @typedef {{
-  *   lcp: number | null;
-  *   fid: number | null;
-  *   cls: number | null;
-  *   inp: number | null;
-  *   fcp: number | null;
-  *   ttfb: number | null;
-  * }} WebVitalsState
-  */
-
+(function() {
  const webVitals = {
    lcp: null,
    fid: null,

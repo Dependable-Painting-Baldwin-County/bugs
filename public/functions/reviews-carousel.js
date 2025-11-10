@@ -11,10 +11,17 @@
     var prevBtn = document.querySelector('.reviews-prev');
     var nextBtn = document.querySelector('.reviews-next');
     
-    if(!track || !deck){ return; }
+    if(!track || !deck){ 
+      console.error('Reviews carousel: Missing required elements');
+      return; 
+    }
     
     function safeReviews(){
-      if(Array.isArray(window.REVIEWS) && window.REVIEWS.length) return window.REVIEWS;
+      if(Array.isArray(window.REVIEWS) && window.REVIEWS.length) {
+        console.log('Reviews loaded:', window.REVIEWS.length, 'reviews');
+        return window.REVIEWS;
+      }
+      console.warn('Reviews data not found, using fallback');
       // Fallback minimal sample if data script failed to load
       return [
         {author:'Homeowner', rating:5, body:'Amazing workmanship and very professional.'},
@@ -23,7 +30,12 @@
     }
     
     var reviews = safeReviews().slice();
-    if(!reviews.length){ return; }
+    if(!reviews.length){ 
+      console.error('No reviews to display');
+      return; 
+    }
+    
+    console.log('Building', reviews.length, 'review cards...');
     
     // Build cards
     reviews.forEach(function(r,i){
@@ -54,8 +66,8 @@
     function startAuto(){ stopAuto(); timer = setInterval(next, autoMs); }
     function stopAuto(){ if(timer) clearInterval(timer); timer=null; }
     
-    prevBtn.addEventListener('click', function(){ prev(); startAuto(); });
-    nextBtn.addEventListener('click', function(){ next(); startAuto(); });
+    if(prevBtn) prevBtn.addEventListener('click', function(){ prev(); startAuto(); });
+    if(nextBtn) nextBtn.addEventListener('click', function(){ next(); startAuto(); });
     deck.addEventListener('mouseenter', stopAuto);
     deck.addEventListener('mouseleave', startAuto);
     deck.addEventListener('focusin', stopAuto);
@@ -75,19 +87,32 @@
       });
     }
     
-    // Ensure track base styles for transform slider
+    // Ensure track base styles for transform slider - AFTER all cards are added
     track.style.display = 'flex';
     track.style.transition = 'transform .6s ease';
-    track.querySelectorAll('.review-card').forEach(function(card){ card.style.flex = '0 0 100%'; });
+    
+    // Apply flex to all cards NOW
+    var cards = track.querySelectorAll('.review-card');
+    console.log('Applying styles to', cards.length, 'cards');
+    cards.forEach(function(card){ 
+      card.style.flex = '0 0 100%'; 
+      card.style.minWidth = '100%';
+    });
     
     // Resize observer to ensure height adjusts smoothly
     var ro; 
     if('ResizeObserver' in window){
-      ro = new ResizeObserver(function(){ deck.style.minHeight = track.offsetHeight + 'px'; });
+      ro = new ResizeObserver(function(){ 
+        deck.style.minHeight = track.offsetHeight + 'px'; 
+      });
       ro.observe(track);
     }
     
+    // Initialize
+    updateDots();
     focusIndex(0);
     startAuto();
+    
+    console.log('Reviews carousel initialized successfully');
   });
 })();

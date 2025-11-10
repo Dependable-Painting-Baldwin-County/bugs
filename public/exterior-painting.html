@@ -12,7 +12,6 @@
 	<title>Exterior Painting Contractor Baldwin & Mobile County AL | Dependable Painting</title>
 	<meta name="description" content="Dependable Painting provides licensed & insured exterior painting: siding, brick, stucco, decks, fences & metal. Built for Alabama coastal climate. Serving Baldwin & Mobile County (Foley, Daphne, Fairhope, Mobile, Spanish Fort & more). Free detailed estimate.">
 	<link rel="canonical" href="https://dependablepainting.work/exterior-painting.html" />
-	<!-- Standardized favicon & app icons -->
 	<link rel="icon" type="image/png" sizes="16x16" href="https://imagedelivery.net/VwxTcpKX2CusqbCCDB94Nw/ac674276-21f0-4ffc-3b1f-cede4d50db00/favicon16" />
 	<link rel="icon" type="image/png" sizes="32x32" href="https://imagedelivery.net/VwxTcpKX2CusqbCCDB94Nw/ac674276-21f0-4ffc-3b1f-cede4d50db00/favicon32" />
 	<link rel="icon" type="image/png" sizes="64x64" href="https://imagedelivery.net/VwxTcpKX2CusqbCCDB94Nw/ac674276-21f0-4ffc-3b1f-cede4d50db00/favicon64" />
@@ -495,20 +494,15 @@
 			<a href="/sitemap.xml">Sitemap</a>
 		</nav>
 	</footer>
-
   <script>
-    // Hours popup toggle (accessible)
     (function () {
       function ready(f) { if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', f); else f(); }
       ready(function () {
         var toggle = document.querySelector('.hours-toggle');
         var popup = document.getElementById('hoursPopup');
         if (!toggle || !popup) return;
-
-        // Initialize ARIA state
         toggle.setAttribute('aria-expanded', 'false');
         popup.setAttribute('aria-hidden', 'true');
-
         function openPopup() {
           popup.classList.add('open');
           popup.setAttribute('aria-hidden', 'false');
@@ -530,7 +524,6 @@
         function onKeyDown(e) {
           if (e.key === 'Escape') closePopup();
         }
-
         toggle.addEventListener('click', function (e) {
           e.preventDefault();
           if (popup.classList.contains('open')) closePopup();
@@ -539,40 +532,9 @@
       });
     })();
   </script>
-	<script src="https://unpkg.com/swiper/swiper-bundle.min.js" defer></script>
-	<script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
 	<script src="/functions/global.js" defer></script>
 	<script src="/functions/reviews-data.js" defer></script>
 	<script src="/functions/reviews.js" defer></script>
-	<script src="/functions/analytics.js" defer></script>
 	<script src="/functions/chat-widget.js" defer></script>
-	<script src="/functions/faq.js" defer></script>
-	<style>
-		/* Simple style for icons in the new section */
-		.icon-large {
-			font-size: 2.5rem;
-			/* Adjust size as needed */
-			color: #ff3b3b;
-			/* Brand color */
-			margin-bottom: 0.8rem;
-			display: block;
-			/* Center icon */
-			text-align: center;
-			/* Center icon */
-		}
-
-		#exterior-specialties .service-card {
-			display: flex;
-			flex-direction: column;
-			justify-content: space-between;
-			/* Pushes link to bottom */
-		}
-
-		#exterior-specialties .service-card a {
-			margin-top: auto;
-			/* Pushes link to bottom */
-		}
-	</style>
-</body>
-
+ </body>
 </html>
