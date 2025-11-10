@@ -1,48 +1,49 @@
 {
-	"$schema": "node_modules/wrangler/config-schema.json",
-	"name": "bugs",
-	"main": "src/index.ts",
-	"compatibility_date": "2025-09-01",
-	"compatibility_flags": [
-		"global_fetch_strictly_public",
-		"nodejs_compat",
-		"nodejs_compat_populate_process_env",
-		"enable_nodejs_process_v2",
-		"enable_nodejs_http_modules",
-		"cache_no_cache_enabled"
-	],
-	"placement": {
-		"mode": "smart"
-	},
-	"assets": {
-		"directory": "./public"
-	},
-	"observability": {
-		"enabled": true
-	},
-	"d1_databases": [
-		{
-			"binding": "PAINTERS_DB",
-			"database_name": "PAINTERS_DB",
-			"database_id": "986cf679-e4ed-4788-b53a-a06342b178d4",
-			"remote": true
-		}
-	],
-	"ai": {
-		"binding": "AI"
-	},
-	"analytics_engine_datasets": [
-		{
-			"binding": "ANALYTICS_EVENTS",
-			"dataset": "analytics_events"
-		}
-	],
-	"kv_namespaces": [
-		{
-			"binding": "CHAT_HISTORY",
-			"id": "b5f7b4a524f842a0915779cb5e14bbae",
-			"preview_id": "38689e4327af4f4b9f5643c54336e474",
-			"remote": true
-		}
-	]
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "bugs",
+  "main": "src/index.ts",
+  "compatibility_date": "2025-09-01",
+  "compatibility_flags": [
+    "global_fetch_strictly_public",
+    "nodejs_compat",
+    "nodejs_compat_populate_process_env",
+    "enable_nodejs_process_v2",
+    "enable_nodejs_http_modules",
+    "cache_no_cache_enabled"
+  ],
+  "placement": {
+    "mode": "smart"
+  },
+  "assets": {
+    "directory": "./public",
+    "binding": "ASSETS"
+  },
+  "observability": {
+    "enabled": true
+  },
+  "d1_databases": [
+    {
+      "binding": "PAINTERS_DB",
+      "database_name": "PAINTERS_DB",
+      "database_id": "986cf679-e4ed-4788-b53a-a06342b178d4",
+      "remote": true
+    }
+  ],
+  "ai": {
+    "binding": "AI"
+  },
+  "analytics_engine_datasets": [
+    {
+      "binding": "ANALYTICS_EVENTS",
+      "dataset": "analytics_events"
+    }
+  ],
+  "kv_namespaces": [
+    {
+      "binding": "CHAT_HISTORY",
+      "id": "b5f7b4a524f842a0915779cb5e14bbae",
+      "preview_id": "38689e4327af4f4b9f5643c54336e474",
+      "remote": true
+    }
+  ]
 }

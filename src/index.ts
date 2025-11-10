@@ -1,8 +1,3 @@
-import { D1Database } from '@cloudflare/workers-types/experimental/d1';
-import { IncomingRequestCf } from 'cloudflare-workers-types/global';
-import { Ai } from '@cloudflare/ai-types';
-import { AnalyticsEngineDataset } from '@cloudflare/analytics-engine-types/experimental/analytics_engine_dataset';
-import { Fetcher } from '@cloudflare/workers-types/experimental/fetcher';
 interface Env {
 	PAINTERS_DB: D1Database;
 	CHAT_HISTORY: KVNamespace;
