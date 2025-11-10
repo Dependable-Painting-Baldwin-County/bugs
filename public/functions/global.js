@@ -1,16 +1,16 @@
  (function(){
-	 const FAVICON_URL = 'https://imagedelivery.net/VwxTcpKX2CusqbCCDB94Nw/ac674276-21f0-4ffc-3b1f-cede4d50db00/favicon64';
-	 const TOUCH_ICON_URL = 'https://imagedelivery.net/VwxTcpKX2CusqbCCDB94Nw/5c4a8637-d6b7-4688-5e2f-651392e3c200/icon180';
+   const FAVICON_URL = 'https://imagedelivery.net/VwxTcpKX2CusqbCCDB94Nw/415808af-bbe7-4016-b250-5614339a4000/favicon64';
+   const TOUCH_ICON_URL = 'https://imagedelivery.net/VwxTcpKX2CusqbCCDB94Nw/415808af-bbe7-4016-b250-5614339a4000/icon180';
 
-	 function ensureLink(rel, attr) {
-		 let link = document.querySelector(`link[rel="${rel}"]`);
-		 if (!link) {
-			 link = document.createElement('link');
-			 link.rel = rel;
-			 document.head.appendChild(link);
-		 }
-		 Object.keys(attr).forEach(key => link.setAttribute(key, attrs[key]));
-	 }
+   function ensureLink(rel, attrs) {
+     let link = document.querySelector(`link[rel="${rel}"]`);
+     if (!link) {
+       link = document.createElement('link');
+       link.rel = rel;
+       document.head.appendChild(link);
+     }
+     Object.keys(attrs).forEach(key => link.setAttribute(key, attrs[key]));
+   }
 
 	 function updateIcons() {
 		 ensureLink('icon', { href: FAVICON_URL });
@@ -55,7 +55,7 @@
     let lastFocus = null;
     function focusableNodes(){ if(!menu) return []; return selAll('a, button, [tabindex]:not([tabindex="-1"])', menu).filter(el=>!el.hasAttribute('disabled') && el.offsetParent!==null); }
     function trapKey(e){ if(e.key!=='Tab' || !menu?.classList.contains('open')) return; const nodes=focusableNodes(); if(!nodes.length) return; const first=nodes[0]; const last=nodes[nodes.length-1]; if(e.shiftKey && document.activeElement===first){ e.preventDefault(); last.focus(); } else if(!e.shiftKey && document.activeElement===last){ e.preventDefault(); first.focus(); } }
-    function setMenu(open){ if(!menu) return; menu.classList.toggle('open',open); menu.setAttribute('aria-hidden', String(!open)); body.style.overflow = open ? 'hidden' : ''; if(burger){ burger.setAttribute('aria-expanded', String(open)); burger.classList.toggle('active', open); } if(open){ lastFocus = document.activeElement; document.addEventListener('keydown', trapKey); const first=focusableNodes()[0]; if(first) setTimeout(()=>first.focus(),50); } else { document.removeEventListener('keydown', trapKey); if(lastFocus) setTimeout(()=> lastFocus && lastFocus.focus(),50); } }
+  function setMenu(open){ if(!menu) return; menu.classList.toggle('open',open); menu.setAttribute('aria-hidden', String(!open)); body.classList.toggle('no-scroll', open); if(burger){ burger.setAttribute('aria-expanded', String(open)); burger.classList.toggle('active', open); } if(open){ lastFocus = document.activeElement; document.addEventListener('keydown', trapKey); const first=focusableNodes()[0]; if(first) setTimeout(()=>first.focus(),50); } else { document.removeEventListener('keydown', trapKey); if(lastFocus) setTimeout(()=> lastFocus && lastFocus.focus(),50); } }
     if(burger) burger.addEventListener('click', ()=> setMenu(true));
     if(closeBtn) closeBtn.addEventListener('click', ()=> setMenu(false));
     if(menu) selAll('a', menu).forEach(a=> a.addEventListener('click', ()=>{ if(!a.closest('.has-submenu')) setMenu(false); }));
@@ -80,9 +80,13 @@
           if(!top){ top = document.createElement('div'); top.className='footer-top'; footer.insertBefore(top, footer.firstChild); }
           let brand = sel('.footer-brand', top);
           if(!brand){ brand = document.createElement('div'); brand.className='footer-brand'; top.insertBefore(brand, top.firstChild); }
-          // Insert SVG logo if not present.
-          if(!brand.querySelector('svg')){
-            brand.innerHTML = '<svg width="40" height="40" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Dependable Painting logo"><title>Dependable Painting Logo</title><rect width="64" height="64" rx="8" fill="#161616"/><path d="M14 46l18-28 10 15 8-6 0 19H14z" fill="#ff3b3b"/><path d="M24 46h16v-8l-6-9-10 17z" fill="#fff" opacity="0.9"/><circle cx="22" cy="18" r="4" fill="#ff3b3b" stroke="#fff" stroke-width="2"/></svg>' + brand.innerHTML;
+          // Insert raster logo if not present.
+          if(!brand.querySelector('img')){
+            const logoImg = document.createElement('img');
+            logoImg.src = FAVICON_URL;
+            logoImg.alt = 'Dependable Painting logo';
+            logoImg.width = 40; logoImg.height = 40;
+            brand.insertBefore(logoImg, brand.firstChild);
           }
           const span = document.createElement('span');
           span.className='footer-rating';
@@ -93,7 +97,7 @@
         }
       }
       if(footerRatings.length){
-        const w =  @type {any} */(window);
+        const w = window;
         let avg = 0; let count = 0;
         if(Array.isArray(w.REVIEWS) && w.REVIEWS.length){
           const nums = w.REVIEWS.map(r => typeof r.rating === 'number' ? r.rating : 0).filter(n => n>0);
@@ -123,7 +127,10 @@
         header.innerHTML = `
           <div class="brand">
             <a href="/" aria-label="Dependable Painting">
-              <svg width="40" height="40" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Dependable Painting logo"><title>Dependable Painting Logo</title><rect width="64" height="64" rx="8" fill="#161616"/><path d="M14 46l18-28 10 15 8-6 0 19H14z" fill="#ff3b3b"/><path d="M24 46h16v-8l-6-9-10 17z" fill="#fff" opacity="0.9"/><circle cx="22" cy="18" r="4" fill="#ff3b3b" stroke="#fff" stroke-width="2"/></svg>
+              <picture>
+                <source media="(min-width:600px)" srcset="${TOUCH_ICON_URL}">
+                <img src="${FAVICON_URL}" alt="Dependable Painting logo" width="40" height="40" loading="lazy" decoding="async" />
+              </picture>
             </a>
             <span>Dependable Painting</span>
           </div>

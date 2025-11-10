@@ -21,12 +21,12 @@
     { author: 'Patty Rowland', rating: 4.0, body: 'Whole interior repaint. Fast yet very good. Professional, respectful, neat—thrilled with the results.' }
   ];
   // Expose globally for reviews.js consumption. Merge if existing.
-  const w =  @type {any} */(window);
+  const w = window;
   if(Array.isArray(w.REVIEWS) && w.REVIEWS.length){
     // Keep existing, optionally push new unique authors not present.
-   @param {{author:string, body:string}} r */
-  function authorOf(r){ return r.author; }
-  const existingAuthors = new Set(w.REVIEWS.map(authorOf));
+    /** @param {{author:string, body:string}} r */
+    function authorOf(r){ return r.author; }
+    const existingAuthors = new Set(w.REVIEWS.map(authorOf));
     raw.forEach(r=>{ if(!existingAuthors.has(r.author)) w.REVIEWS.push(r); });
   } else {
     w.REVIEWS = raw;

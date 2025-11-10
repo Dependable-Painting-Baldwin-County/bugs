@@ -4,11 +4,14 @@
   const HISTORY_ENDPOINT = '/api/chat/history';
   const STORAGE_KEY = 'dp_session_id_v1';
 
-   Get or create a session id */
+  /* Get or create a session id */
   function sid(){ let s=localStorage.getItem(STORAGE_KEY); if(!s){ s=crypto.randomUUID(); localStorage.setItem(STORAGE_KEY,s);} return s; }
 
-   Lightweight hyperscript helper */
-   @param {string} tag @param {Record<string, any>=} attrs @param {(Node|string)[]=} children */
+  /** Lightweight hyperscript helper
+   * @param {string} tag
+   * @param {Record<string, any>=} attrs
+   * @param {(Node|string)[]=} children
+   */
   function h(tag, attrs={}, children=[]) {
     const el=document.createElement(tag);
     for (const [k,v] of Object.entries(attrs)) {
@@ -56,27 +59,29 @@
   `]);
   document.head.appendChild(style);
 
-  const launch = h('button',{class:'dp-chat-launch',title:'Chat Painting Questions',ariaLabel:'Open painting assistant'},['?']);
+  const launch = h('button',{class:'dp-chat-launch',title:'Chat Painting Questions','aria-label':'Open painting assistant'},['?']);
   const panel = h('div',{class:'dp-chat-panel',style:'display:none'},[]);
   const header = h('div',{class:'dp-chat-header'},[
     h('span',{},['Painting Assistant']),
-    h('button',{ariaLabel:'Close chat',onclick:()=>{panel.style.display='none';launch.style.display='flex';}},['✕'])
+    h('button',{'aria-label':'Close chat',onclick:()=>{panel.style.display='none';launch.style.display='flex';}},['✕'])
   ]);
   const bodyEl = h('div',{class:'dp-chat-body',role:'log','aria-live':'polite'});
   const SUGGESTIONS = ['How to prep exterior','Best cabinet finish','Paint for humid climate','Deck repaint steps','Trim paint advice'];
-  const textArea = @type {HTMLTextAreaElement} */(h('textarea',{placeholder:'Ask about surfaces, Sherwin-Williams, prep, scheduling...'}));
-  const sendBtn =  @type {HTMLButtonElement} */(h('button',{disabled:true},['Send']));
+  const textArea = h('textarea',{placeholder:'Ask about surfaces, Sherwin-Williams, prep, scheduling...'});
+  const sendBtn = h('button',{disabled:true},['Send']);
   const suggestions = h('div',{class:'dp-suggestion-bar'}, SUGGESTIONS.map(txt=>h('button',{onclick:()=>{ textArea.value=txt; textArea.focus();}},[txt])));
   const footer = h('div',{class:'dp-chat-footer'},[textArea,sendBtn]);
   const ctaLine = h('div',{class:'dp-cta-line'},[`Need a fast estimate? Call ${PHONE_DISPLAY}`]);
   panel.append(header,bodyEl,suggestions,footer,ctaLine);
   document.body.appendChild(launch); document.body.appendChild(panel);
 
-   Add a message bubble */
-   @param {string} content @param {'user'|'ai'} role */
+  /** Add a message bubble
+   * @param {string} content
+   * @param {'user'|'ai'} role
+   */
   function addMsg(content, role){ const el=h('div',{class:'dp-msg '+role},[content]); bodyEl.appendChild(el); bodyEl.scrollTop=bodyEl.scrollHeight; return el; }
 
-   Spinner placeholder */
+  /* Spinner placeholder */
   function thinking(){ const el=h('div',{class:'dp-msg ai'},[h('span',{},['Thinking']),h('span',{class:'dp-spinner'})]); bodyEl.appendChild(el); bodyEl.scrollTop=bodyEl.scrollHeight; return el; }
 
   function open(){ launch.style.display='none'; panel.style.display='flex'; textArea.focus(); }
@@ -84,8 +89,9 @@
 
   textArea.addEventListener('input',()=>{ sendBtn.disabled=!textArea.value.trim(); });
 
-   Build contextual navigation chip links */
-   @param {string} answer */
+  /** Build contextual navigation chip links
+   * @param {string} answer
+   */
   function buildLinks(answer){
     const row=h('div',{class:'dp-links'});
     const pages=[{k:'interior',t:'Interior',u:'/interior-painting.html'},{k:'exterior',t:'Exterior',u:'/exterior-painting.html'},{k:'cabinet',t:'Cabinets',u:'/cabinet-painting.html'},{k:'commercial',t:'Commercial',u:'/commercial-painting.html'},{k:'services',t:'Services',u:'/services.html'},{k:'contact',t:'Contact',u:'/contact-form.html'}];
@@ -94,8 +100,10 @@
     return row;
   }
 
-   Feedback buttons */
-   @param {string} session @param {string} answer */
+  /** Feedback buttons
+   * @param {string} session
+   * @param {string} answer
+   */
   function addFeedback(session, answer){
     const fb=h('div',{class:'dp-feedback'},[
       h('button',{title:'Helpful',onclick:()=>{fetch('/api/track',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({type:'chat_feedback_up',session,page:location.pathname})}); fb.remove();}},['👍']),
@@ -104,20 +112,21 @@
     return fb;
   }
 
-   Quick estimate form if intents show interest */
-   @typedef {{wantsEstimate?:boolean; scheduling?:boolean; prep?:boolean; product?:boolean}} IntentFlags */
-   @param {IntentFlags|undefined} intents */
+  /** Quick estimate form if intents show interest
+   * @typedef {{wantsEstimate?:boolean; scheduling?:boolean; prep?:boolean; product?:boolean}} IntentFlags
+   * @param {IntentFlags|undefined} intents
+   */
   function maybeEstimateForm(intents){
     if(!intents || !intents.wantsEstimate) return null;
-  const form = h('form',{class:'dp-estimate-form',onsubmit:async ( @type {SubmitEvent} */ e)=>{
+  const form = h('form',{class:'dp-estimate-form',onsubmit:async (e)=>{
       e.preventDefault();
-      const btn =  @type {HTMLButtonElement|null} */(form.querySelector('button'));
+  const btn = form.querySelector('button');
       if(btn){ btn.disabled=true; btn.textContent='Sending...'; }
-      const nameEl =  @type {HTMLInputElement|null} */(form.querySelector('[name=name]'));
-      const phoneEl =  @type {HTMLInputElement|null} */(form.querySelector('[name=phone]'));
-      const emailEl =  @type {HTMLInputElement|null} */(form.querySelector('[name=email]'));
-      const serviceEl =  @type {HTMLSelectElement|null} */(form.querySelector('[name=service]'));
-      const msgEl =  @type {HTMLInputElement|null} */(form.querySelector('[name=message]'));
+  const nameEl = form.querySelector('[name=name]');
+  const phoneEl = form.querySelector('[name=phone]');
+  const emailEl = form.querySelector('[name=email]');
+  const serviceEl = form.querySelector('[name=service]');
+  const msgEl = form.querySelector('[name=message]');
       const payload = {
         name: nameEl?.value.trim()||'',
         phone: phoneEl?.value.trim()||'',
@@ -153,7 +162,7 @@
     return form;
   }
 
-   Send user prompt; handle streaming SSE or JSON */
+  /* Send user prompt; handle streaming SSE or JSON */
   async function send(){
     const msg=textArea.value.trim();
     if(!msg) return;
@@ -223,9 +232,8 @@
   }
 
   sendBtn.addEventListener('click',send);
-   @param {KeyboardEvent} e */
   textArea.addEventListener('keydown',e=>{ if(e.key==='Enter' && !e.shiftKey){ e.preventDefault(); send(); }});
-   Load recent history */
+  /* Load recent history */
   async function loadHistory(){
     try {
       const r=await fetch(`${HISTORY_ENDPOINT}?session=${encodeURIComponent(sid())}&limit=6`);
@@ -234,7 +242,7 @@
         console.warn('Failed to parse history JSON:', err);
         return { items: [] };
       });
-  if(j.items){ j.items.reverse().forEach(( @type {{question?:string; answer?:string}} */ it)=>{ if(it.question) addMsg(it.question,'user'); if(it.answer) addMsg(it.answer,'ai'); }); }
+  if(j.items){ j.items.reverse().forEach(it=>{ if(it.question) addMsg(it.question,'user'); if(it.answer) addMsg(it.answer,'ai'); }); }
     } catch (err) {
       console.warn('History load error:', err);
     }

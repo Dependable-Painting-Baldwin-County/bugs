@@ -44,3 +44,4 @@ vars
 .vars
 node_modules
 .wrangler
+CHANGES_SUMMARY.md
