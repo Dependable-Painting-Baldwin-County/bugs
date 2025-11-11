@@ -255,24 +255,42 @@
       });
     }
 
-    // === FAQ Accordion ===
-    const faqButtons = selAll('.faq-q');
-    faqButtons.forEach(button => {
-      button.addEventListener('click', () => {
-        const isExpanded = button.getAttribute('aria-expanded') === 'true';
-        const answerId = button.getAttribute('aria-controls');
-        const answer = document.getElementById(answerId);
-        if (!answer) return;
-        button.setAttribute('aria-expanded', String(!isExpanded));
-        answer.hidden = isExpanded;
+    // === FAQ Accordion: one-open-at-a-time ===
+    function initFAQAccordion() {
+      const questions = selAll('.faq-q[aria-controls]');
+      if (!questions.length) return;
+
+      questions.forEach(btn => {
+        btn.addEventListener('click', () => toggleFAQ(btn));
+        btn.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            toggleFAQ(btn);
+          }
+        });
       });
-      button.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter' || e.key === ' ') {
-          e.preventDefault();
-          button.click();
+
+      function toggleFAQ(activeBtn) {
+        const targetId = activeBtn.getAttribute('aria-controls');
+        const activeAnswer = document.getElementById(targetId);
+        const isOpen = activeBtn.getAttribute('aria-expanded') === 'true';
+
+        // close all
+        questions.forEach(btn => {
+          const ans = document.getElementById(btn.getAttribute('aria-controls'));
+          if (ans) ans.hidden = true;
+          btn.setAttribute('aria-expanded', 'false');
+        });
+
+        // open the clicked one if it was previously closed
+        if (!isOpen && activeAnswer) {
+          activeAnswer.hidden = false;
+          activeBtn.setAttribute('aria-expanded', 'true');
         }
-      });
-    });
+      }
+    }
+
+    initFAQAccordion();
 
     // === Dynamic Footer Rating Injection ===
     try {
