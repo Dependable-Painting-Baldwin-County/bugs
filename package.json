@@ -20,10 +20,11 @@
 		"@ai-sdk/anthropic": "^2.0.42",
 		"@ai-sdk/google": "^2.0.29",
 		"@ai-sdk/openai": "^2.0.64",
-		"@ai-sdk/react": "^2.0.89",
 		"ai": "^5.0.89",
 		"ai-gateway-provider": "^2.0.1",
 		"ai-sdk-provider-claude-code": "^2.1.0",
+		"releases": "^1.1.0",
+		"swiper": "^12.0.3",
 		"workers-ai-provider": "^2.0.0"
 	}
 }

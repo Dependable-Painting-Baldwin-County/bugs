@@ -45,3 +45,4 @@ vars
 node_modules
 .wrangler
 CHANGES_SUMMARY.md
+public/.DS_Store

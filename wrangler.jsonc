@@ -24,7 +24,8 @@
     "enabled": true
   },
   "vars": {
-    "ENVIRONMENT": "env.production",
+    "ENVIRONMENT": "env.production"
+  },
   "d1_databases": [
     {
       "binding": "PAINTERS_DB",
@@ -39,14 +40,10 @@
       "index_name": "paint-vector",
       "remote": true
     }
-  ],  
-  "ai": [
-    {
-      "binding": "AI",
-      "model": "gpt-5",
-      "provider": "openai"
-    }
-  ],    
+  ],
+  "ai": {
+    "binding": "AI"
+  },
   "analytics_engine_datasets": [
     {
       "binding": "ANALYTICS_EVENTS",
@@ -61,4 +58,4 @@
       "remote": true
     }
   ]
-}}
+}
