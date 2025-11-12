@@ -28,13 +28,7 @@
   function sel(q,root=document){ return root.querySelector(q); }
   function selAll(q,root=document){ return Array.from(root.querySelectorAll(q)); }
   function ready(fn){ if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',fn); else fn(); }
-  
-  ready(function(){
-    const body = document.body;
-    // OLD MOBILE MENU CODE - DISABLED (using header.js module instead)
-    // const burger = sel('#hamburger');
-    // const menu = sel('#mobileMenu');
-    // const closeBtn = sel('#closeMenu');
+  ready(()=>{
     const hoursToggle = sel('.hours-toggle');
     const hours = sel('#hoursPopup');
     const yearSpan = sel('#current-year');
@@ -42,57 +36,7 @@
     if(yearSpan) yearSpan.textContent = String(new Date().getFullYear());
     if(hoursToggle && !hoursToggle.hasAttribute('aria-expanded')) hoursToggle.setAttribute('aria-expanded','false');
     
-    // Active link highlighting disabled for new nav structure
-    // const curPath = (location.pathname.replace(/\/+$/,'')||'/');
-    // selAll('nav.primary-nav a, nav.menu a').forEach(a=>{
-    //   const href = a.getAttribute('href');
-    //   if(!href) return;
-    //   const norm = href.replace(/\/+$/,'');
-    //   if(norm === curPath){
-    //     a.setAttribute('aria-current','page');
-    //     a.classList.add('active-link');
-    //     const parentSubmenu = a.closest('.has-submenu');
-    //     if(parentSubmenu){
-    //       parentSubmenu.classList.add('open');
-    //       const btn = parentSubmenu.querySelector('button');
-    //       if(btn) btn.setAttribute('aria-expanded','true');
-    //       const submenu = parentSubmenu.querySelector('.mobile-submenu');
-    //       if(submenu) submenu.setAttribute('aria-hidden','false');
-    //     }
-    //   }
-    // });
-    
-    // OLD MENU FUNCTIONS - DISABLED
-    // let lastFocus = null;
-    // function focusableNodes(){ if(!menu) return []; return selAll('a, button, [tabindex]:not([tabindex="-1"])', menu).filter(el=>!el.hasAttribute('disabled') && el.offsetParent!==null); }
-    // function trapKey(e){ if(e.key!=='Tab' || !menu?.classList.contains('open')) return; const nodes=focusableNodes(); if(!nodes.length) return; const first=nodes[0]; const last=nodes[nodes.length-1]; if(e.shiftKey && document.activeElement===first){ e.preventDefault(); last.focus(); } else if(!e.shiftKey && document.activeElement===last){ e.preventDefault(); first.focus(); } }
-    // 
-    // function setMenu(open){ 
-    //   if(!menu) return; 
-    //   menu.classList.toggle('open',open); 
-    //   menu.setAttribute('aria-hidden', String(!open)); 
-    //   body.classList.toggle('no-scroll', open); 
-    //   if(burger){ 
-    //     burger.setAttribute('aria-expanded', String(open)); 
-    //     burger.classList.toggle('active', open); 
-    //   } 
-    //   if(open){ 
-    //     lastFocus = document.activeElement; 
-    //     document.addEventListener('keydown', trapKey); 
-    //     const first=focusableNodes()[0]; 
-    //     if(first) setTimeout(()=>first.focus(),50); 
-    //   } else { 
-    //     document.removeEventListener('keydown', trapKey); 
-    //     if(lastFocus) setTimeout(()=> lastFocus && lastFocus.focus(),50); 
-    //   } 
-    // }
-    // 
-    // if(burger) burger.addEventListener('click', ()=> setMenu(true));
-    // if(closeBtn) closeBtn.addEventListener('click', ()=> setMenu(false));
-    // if(menu) selAll('a', menu).forEach(a=> a.addEventListener('click', ()=>{ if(!a.closest('.has-submenu')) setMenu(false); }));
-    // document.addEventListener('keydown', e=>{ if(e.key==='Escape' && menu?.classList.contains('open')) setMenu(false); });
-    // document.addEventListener('click', e=>{ if(!menu?.classList.contains('open')) return; const tgt = e.target; if(tgt?.closest('#mobileMenu') || tgt?.closest('#hamburger')) return; setMenu(false); });
-    
+
     if(hoursToggle && hours){
       hoursToggle.addEventListener('click', e=>{ e.preventDefault(); const isOpen = hours.classList.toggle('visible'); hoursToggle.setAttribute('aria-expanded', String(isOpen)); });
       document.addEventListener('click', e=>{ if(!hours.classList.contains('visible')) return; const tgt = e.target; if(tgt?.closest('.hours-toggle') || tgt?.closest('#hoursPopup')) return; hours.classList.remove('visible'); hoursToggle.setAttribute('aria-expanded','false'); });
@@ -110,43 +54,6 @@
       }, { once: true });
     }
 
-    // === Transform-based Carousel Slider === [DISABLED - Using Swiper]
-    // document.querySelectorAll('.carousel').forEach(carousel => {
-    //   const track = carousel.querySelector('.track');
-    //   const slides = track ? Array.from(track.children) : [];
-    //   const prevBtn = carousel.querySelector('.prev');
-    //   const nextBtn = carousel.querySelector('.next');
-    //   if (!track || !prevBtn || !nextBtn || !slides.length) return;
-    //   
-    //   track.style.display = 'flex';
-    //   track.style.transition = 'transform .6s ease';
-    //   slides.forEach(s => { s.style.flex = '0 0 100%'; });
-    //   
-    //   let index = 0;
-    //   const autoMs = 5000;
-    //   let timer = null;
-    //   
-    //   function go(i) {
-    //     index = (i + slides.length) % slides.length;
-    //     track.style.transform = 'translateX(-' + (index * 100) + '%)';
-    //   }
-    //   function next() { go(index + 1); }
-    //   function prev() { go(index - 1); }
-    //   function start() { stop(); timer = setInterval(next, autoMs); }
-    //   function stop() { if (timer) clearInterval(timer); timer = null; }
-    //   
-    //   nextBtn.addEventListener('click', () => { next(); start(); });
-    //   prevBtn.addEventListener('click', () => { prev(); start(); });
-    //   ['mouseenter', 'focusin'].forEach(ev => carousel.addEventListener(ev, stop));
-    //   ['mouseleave', 'focusout'].forEach(ev => carousel.addEventListener(ev, start));
-    //   prevBtn.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); prevBtn.click(); }});
-    //   nextBtn.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); nextBtn.click(); }});
-    //   
-    //   go(0);
-    //   start();
-    // });
-
-    // === Gallery Lightbox with Zoom & Pan ===
     const galleryImages = selAll('#gallery .gallery-fig img');
     if (galleryImages.length) {
       let lightbox, lbImg, lbCaption;
@@ -335,107 +242,6 @@
       }
     } catch(e){ console.warn('Footer rating injection failed', e); }
 
-    // === Normalize Header & Primary Nav ===
-    try {
-      const existingHeader = sel('header.site-header');
-      const FAVICON_URL = 'https://imagedelivery.net/VwxTcpKX2CusqbCCDB94Nw/415808af-bbe7-4016-b250-5614339a4000/favicon64';
-      const TOUCH_ICON_URL = 'https://imagedelivery.net/VwxTcpKX2CusqbCCDB94Nw/415808af-bbe7-4016-b250-5614339a4000/icon180';
-      
-      function buildHeader(){
-        const header = document.createElement('header');
-        header.className='site-header';
-        header.id = 'dp-standard-header';
-        header.setAttribute('role','banner');
-        header.innerHTML = `
-          <div class="brand">
-            <a href="/" aria-label="Dependable Painting">
-              <picture>
-                <source media="(min-width:600px)" srcset="${TOUCH_ICON_URL}">
-                <img src="${FAVICON_URL}" alt="Dependable Painting logo" width="40" height="40" loading="lazy" decoding="async" />
-              </picture>
-            </a>
-            <span>Dependable Painting</span>
-          </div>
-          <nav class="primary-nav nav-desktop" aria-label="Primary">
-            <div class="nav-item-has-children">
-              <a href="/services.html" aria-haspopup="true" aria-expanded="false">Services</a>
-              <div class="submenu" role="menu" aria-label="Services submenu">
-                <div class="submenu-group" aria-label="Core Services">
-                  <a href="/exterior-painting.html" role="menuitem">Exterior Painting</a>
-                  <a href="/interior-painting.html" role="menuitem">Interior Painting</a>
-                  <a href="/commercial-painting.html" role="menuitem">Commercial Painting</a>
-                  <a href="/cabinet-painting.html" role="menuitem">Cabinet Painting</a>
-                  <a href="/sheetrock-repair.html" role="menuitem">Drywall Repair</a>
-                </div>
-                <hr style="border-top:1px solid #333;margin:6px 0;">
-                <div class="submenu-group" aria-label="Exterior Sub-services">
-                  <a href="/stucco-brick-painting.html" role="menuitem">Stucco & Brick</a>
-                  <a href="/wood-siding.html" role="menuitem">Wood Siding</a>
-                  <a href="/deck-fence-painting.html" role="menuitem">Decks & Fences</a>
-                  <a href="/metal-painting.html" role="menuitem">Metal Surfaces</a>
-                  <a href="/exterior-repair.html" role="menuitem">Exterior Repair</a>
-                  <a href="/furniture-painting.html" role="menuitem">Outdoor Furniture</a>
-                </div>
-                <hr style="border-top:1px solid #333;margin:6px 0;">
-                <a href="/services.html" role="menuitem" style="font-style:italic;">View All Services</a>
-              </div>
-            </div>
-            <a href="/about.html">About</a>
-            <a href="/reviews.html">Reviews</a>
-            <a id="call" class="call-link" href="tel:+12514235855" aria-label="Call (251) 423-5855">Call</a>
-            <a id="text" class="text-link" href="sms:+12514235855" aria-label="Text (251) 423-5855">Text</a>
-            <a href="/privacy.html">Privacy</a>
-          </nav>
-          <div class="nav-icons">
-            <button class="hours-toggle" type="button" title="Hours" aria-label="View business hours" aria-expanded="false" aria-controls="hoursPopup"><i class="fas fa-clock" aria-hidden="true"></i></button>
-            <a href="tel:+12514235855" title="Call" aria-label="Call (251) 423-5855"><i class="fas fa-phone" aria-hidden="true"></i></a>
-            <a href="sms:+12514235855" title="Text For Estimate" aria-label="Text us for estimate"><i class="fas fa-comment" aria-hidden="true"></i></a>
-            <button class="hamburger" id="hamburger" type="button" aria-label="Open Menu" aria-controls="mobileMenu" aria-expanded="false"><span></span><span></span><span></span></button>
-          </div>
-          <div id="hoursPopup" role="dialog" aria-label="Business Hours" aria-hidden="true"><strong>Hours</strong><br>Mon–Fri: 8:00a–5:30p<br>Sat: by appt • Sun: closed</div>`;
-        return header;
-      }
-      
-      if(!existingHeader || !existingHeader.querySelector('.call-link')){
-        const newHeader = buildHeader();
-        if(existingHeader){ existingHeader.replaceWith(newHeader); }
-        else document.body.insertBefore(newHeader, document.body.firstChild);
-      }
-      
-      if(!sel('#mobileMenu')){
-        const mobile = document.createElement('nav');
-        mobile.className='menu';
-        mobile.id='mobileMenu';
-        mobile.setAttribute('aria-label','Mobile Navigation');
-        mobile.setAttribute('aria-hidden','true');
-        mobile.innerHTML = `
-          <button class="close-btn" id="closeMenu" type="button" aria-label="Close Menu">&times;</button>
-          <a href="/">Home</a>
-          <div class="has-submenu"><button type="button" aria-expanded="false" aria-controls="mobileSubMenu">Services <span aria-hidden="true">▾</span></button>
-            <ul class="mobile-submenu" id="mobileSubMenu" aria-hidden="true">
-              <li><a href="/exterior-painting.html">Exterior Painting</a></li>
-              <li><a href="/interior-painting.html">Interior Painting</a></li>
-              <li><a href="/commercial-painting.html">Commercial Painting</a></li>
-              <li><a href="/cabinet-painting.html">Cabinet Painting</a></li>
-              <li><a href="/sheetrock-repair.html">Drywall Repair</a></li>
-              <li><a href="/stucco-brick-painting.html">Stucco & Brick</a></li>
-              <li><a href="/wood-siding.html">Wood Siding</a></li>
-              <li><a href="/deck-fence-painting.html">Decks & Fences</a></li>
-              <li><a href="/metal-painting.html">Metal Surfaces</a></li>
-              <li><a href="/exterior-repair.html">Exterior Repair</a></li>
-              <li><a href="/furniture-painting.html">Outdoor Furniture</a></li>
-              <li><a href="/services.html" style="font-style:italic;">View All Services</a></li>
-            </ul>
-          </div>
-          <a href="/about.html">About</a>
-          <a href="/reviews.html">Reviews</a>
-          <a id="call-m" href="tel:+12514235855" class="call-link">Call</a>
-          <a id="text-m" href="sms:+12514235855" class="text-link">Text</a>
-          <a href="/privacy.html">Privacy</a>`;
-        document.body.insertBefore(mobile, sel('main')||null);
-      }
-    } catch(e){ console.warn('Header normalization failed', e); }
-
     // === Minimal Structured Data Injection ===
     try {
       const hasOrg = !!Array.from(document.querySelectorAll('script[type="application/ld+json"]')).some(s => /#organization/i.test(s.textContent||''));
@@ -466,12 +272,8 @@
       }
     } catch(e){ console.warn('Structured data injection failed', e); }
   });
-})();
 
-// === CTA Injection & Cleanup ===
-(function(){
-  function onReady(fn){ if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',fn); else fn(); }
-  onReady(function(){
+  ready(()=>{
     try {
       document.querySelectorAll('a[href*="contact"], a[href*="booking"], a[href*="book"], a[href*="contact-us"]').forEach(a=>{
         const href=(a.getAttribute('href')||'').toLowerCase();

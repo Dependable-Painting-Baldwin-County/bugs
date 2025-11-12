@@ -1,31 +1,21 @@
 {
   "name": "bugs",
   "main": "src/index.ts",
-  "compatibility_date": "2025-09-01",
+  "compatibility_date": "2025-11-11",
   "compatibility_flags": [
     "global_fetch_strictly_public",
     "nodejs_compat",
-    "nodejs_compat_populate_process_env",
     "enable_nodejs_process_v2",
-    "enable_nodejs_http_modules",
     "cache_no_cache_enabled"
   ],
   "routes": [
-    { "pattern": "dependablepainting.work", "custom_domain": true }
+    { "pattern": "dependablepainting.work", "custom_domain": true },
+    { "pattern": "www.dependablepainting.work", "custom_domain": true }
   ],
-  "placement": {
-    "mode": "smart"
-  },
-  "assets": {
-    "directory": "./public",
-    "binding": "ASSETS"
-  },
-  "observability": {
-    "enabled": true
-  },
-  "vars": {
-    "ENVIRONMENT": "env.production"
-  },
+  "placement": { "mode": "smart" },
+  "assets": { "directory": "./public", "binding": "ASSETS" },
+  "observability": { "enabled": true },
+  "vars": { "ENVIRONMENT": "env.production" },
   "d1_databases": [
     {
       "binding": "PAINTERS_DB",
@@ -35,20 +25,11 @@
     }
   ],
   "vectorize": [
-    {
-      "binding": "VECTORIZE",
-      "index_name": "paint-vector",
-      "remote": true
-    }
+    { "binding": "VECTORIZE", "index_name": "paint-vector", "remote": true }
   ],
-  "ai": {
-    "binding": "AI"
-  },
+  "ai": { "binding": "AI" },
   "analytics_engine_datasets": [
-    {
-      "binding": "ANALYTICS_EVENTS",
-      "dataset": "analytics_events"
-    }
+    { "binding": "ANALYTICS_EVENTS", "dataset": "analytics_events" }
   ],
   "kv_namespaces": [
     {

@@ -1,3 +1,25 @@
+// Import security utilities
+import { handleCorsPreflightRequest, getCorsHeaders, isOriginAllowed } from './utils/cors';
+import { applySecurityHeaders } from './utils/security-headers';
+import {
+	validateTrackingPayload,
+	validateChatPayload,
+	validateChatHistoryParams,
+	validateEstimatePayload
+} from './utils/validation';
+import { checkRateLimit, CHAT_LIMIT, TRACK_LIMIT, ESTIMATE_LIMIT, HISTORY_LIMIT } from './utils/rate-limit';
+import {
+	handleOriginNotAllowed,
+	handleValidationError,
+	handleRateLimitError,
+	handleDatabaseError,
+	handleAIError,
+	handleInternalError,
+	logError,
+	createErrorResponse
+} from './utils/error-handler';
+import { validateRequestSize, validateContentType, parseJsonSafely } from './utils/request-validator';
+
 interface Env {
 	PAINTERS_DB: D1Database;
 	CHAT_HISTORY: KVNamespace;
@@ -34,43 +56,38 @@ export default {
 	async fetch(request: Request, env: Env, ctx: ExecutionContext): Promise<Response> {
 		const url = new URL(request.url);
 
-		const corsHeaders = {
-			'Access-Control-Allow-Origin': '*',
-			'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
-			'Access-Control-Allow-Headers': 'Content-Type',
-		};
-
+		// Handle OPTIONS preflight with origin validation
 		if (request.method === 'OPTIONS') {
-			return new Response(null, { headers: corsHeaders });
+			return handleCorsPreflightRequest(request);
 		}
 
 		try {
+			// Get origin for CORS validation on API routes
+			const origin = request.headers.get('Origin');
+
 			// Route API endpoints
 			if (url.pathname === '/api/track') {
-				return await handleTracking(request, env, corsHeaders);
+				return await handleTracking(request, env, origin);
 			}
 
 			if (url.pathname === '/api/chat') {
-				return await handleChat(request, env, corsHeaders);
+				return await handleChat(request, env, origin);
 			}
 
 			if (url.pathname === '/api/chat/history') {
-				return await handleChatHistory(request, env, corsHeaders);
+				return await handleChatHistory(request, env, origin);
 			}
 
 			if (url.pathname === '/api/estimate') {
-				return await handleEstimate(request, env, corsHeaders);
+				return await handleEstimate(request, env, origin);
 			}
 
-			// Serve static assets from public folder
-			return await env.ASSETS.fetch(request);
+			// Serve static assets with security headers
+			const assetResponse = await env.ASSETS.fetch(request);
+			return applySecurityHeaders(assetResponse);
 
 		} catch (error) {
-			console.error('Worker error:', error);
-			return new Response(JSON.stringify({ error: 'Internal server error' }), {
-				status: 500,
-				headers: { ...corsHeaders, 'Content-Type': 'application/json' }
-			});
+			return handleInternalError(error);
 		}
 	}
 };
@@ -82,14 +99,52 @@ function getRequestCf(request: Request): IncomingRequestCf | undefined {
 async function handleTracking(
 	request: Request,
 	env: Env,
-	corsHeaders: Record<string, string>
+	origin: string | null
 ): Promise<Response> {
+	// Validate origin
+	if (!isOriginAllowed(origin)) {
+		return handleOriginNotAllowed();
+	}
+
+	const corsHeaders = getCorsHeaders(origin);
+
 	if (request.method !== 'POST') {
-		return new Response('Method not allowed', { status: 405 });
+		return createErrorResponse(405, 'Method not allowed', 'Only POST requests are allowed', corsHeaders);
+	}
+
+	// Validate request size
+	const sizeCheck = validateRequestSize(request);
+	if (!sizeCheck.valid) {
+		return sizeCheck.error!;
+	}
+
+	// Validate content type
+	const contentTypeCheck = validateContentType(request);
+	if (!contentTypeCheck.valid) {
+		return contentTypeCheck.error!;
 	}
 
 	try {
-		const data = await request.json() as TrackingEvent;
+		// Parse JSON safely
+		const parseResult = await parseJsonSafely(request);
+		if (parseResult.error) {
+			return parseResult.error;
+		}
+
+		const data = parseResult.data as TrackingEvent;
+
+		// Validate payload
+		const validation = validateTrackingPayload(data);
+		if (!validation.valid) {
+			return handleValidationError(validation.errors!);
+		}
+
+		// Check rate limit
+		const sessionId = data.session_id || data.session || 'unknown';
+		const rateLimit = await checkRateLimit(env.CHAT_HISTORY, sessionId, 'track', TRACK_LIMIT);
+		if (!rateLimit.allowed) {
+			return handleRateLimitError(rateLimit.retryAfter!);
+		}
 
 		const cf = getRequestCf(request);
 		const city = cf?.city ?? 'Unknown';
@@ -181,57 +236,105 @@ async function handleTracking(
 
 		// Also write to Analytics Engine for real-time dashboards
 		if (env.ANALYTICS_EVENTS) {
-			env.ANALYTICS_EVENTS.writeDataPoint({
-				blobs: [
-					data.event_type || data.type || 'unknown',
-					data.page_url || data.page || '',
-					city,
-					country
-				],
-				doubles: [data.value || 0],
-				indexes: [data.session_id || data.session || 'unknown']
-			});
+			try {
+				env.ANALYTICS_EVENTS.writeDataPoint({
+					blobs: [
+						data.event_type || data.type || 'unknown',
+						data.page_url || data.page || '',
+						city,
+						country
+					],
+					doubles: [data.value || 0],
+					indexes: [data.session_id || data.session || 'unknown']
+				});
+			} catch (error) {
+				logError('Analytics Engine write failed', error);
+				// Continue even if analytics fails
+			}
 		}
 
-		return new Response(JSON.stringify({ success: true }), {
+		const successResponse = new Response(JSON.stringify({ success: true }), {
 			headers: { ...corsHeaders, 'Content-Type': 'application/json' }
 		});
+		return applySecurityHeaders(successResponse);
 
 	} catch (error) {
-		console.error('Tracking error:', error);
-		return new Response(JSON.stringify({ error: 'Failed to track event' }), {
-			status: 500,
-			headers: { ...corsHeaders, 'Content-Type': 'application/json' }
-		});
+		return handleDatabaseError(error);
 	}
 }
 
 async function handleChat(
 	request: Request,
 	env: Env,
-	corsHeaders: Record<string, string>
+	origin: string | null
 ): Promise<Response> {
+	// Validate origin
+	if (!isOriginAllowed(origin)) {
+		return handleOriginNotAllowed();
+	}
+
+	const corsHeaders = getCorsHeaders(origin);
+
 	if (request.method !== 'POST') {
-		return new Response('Method not allowed', { status: 405 });
+		return createErrorResponse(405, 'Method not allowed', 'Only POST requests are allowed', corsHeaders);
+	}
+
+	// Validate request size
+	const sizeCheck = validateRequestSize(request);
+	if (!sizeCheck.valid) {
+		return sizeCheck.error!;
+	}
+
+	// Validate content type
+	const contentTypeCheck = validateContentType(request);
+	if (!contentTypeCheck.valid) {
+		return contentTypeCheck.error!;
 	}
 
 	try {
-		const { message, session, page, stream } = await request.json() as ChatRequest;
+		// Parse JSON safely
+		const parseResult = await parseJsonSafely(request);
+		if (parseResult.error) {
+			return parseResult.error;
+		}
+
+		const data = parseResult.data as ChatRequest;
+		const { message, session, page, stream } = data;
+
+		// Validate payload
+		const validation = validateChatPayload(data);
+		if (!validation.valid) {
+			return handleValidationError(validation.errors!);
+		}
+
+		// Check rate limit
+		const rateLimit = await checkRateLimit(env.CHAT_HISTORY, session, 'chat', CHAT_LIMIT);
+		if (!rateLimit.allowed) {
+			return handleRateLimitError(rateLimit.retryAfter!);
+		}
 
 		// Special case: frontend requesting metadata after streaming completes
 		if (message === '[context]') {
-			return new Response(JSON.stringify({
+			const contextResponse = new Response(JSON.stringify({
 				intents: null,
 				session
 			}), {
 				headers: { ...corsHeaders, 'Content-Type': 'application/json' }
 			});
+			return applySecurityHeaders(contextResponse);
 		}
 
 		// Load conversation history from KV to maintain context
 		const historyKey = `chat:${session}`;
-		const existingHistory = await env.CHAT_HISTORY.get(historyKey, 'json') as ChatMessage[] | null;
-		const conversationHistory = existingHistory || [];
+		let conversationHistory: ChatMessage[] = [];
+		
+		try {
+			const existingHistory = await env.CHAT_HISTORY.get(historyKey, 'json') as ChatMessage[] | null;
+			conversationHistory = existingHistory || [];
+		} catch (error) {
+			logError('Failed to load chat history', error);
+			// Continue with empty history
+		}
 
 		conversationHistory.push({
 			role: 'user',
@@ -262,16 +365,29 @@ Keep responses concise and conversational (2-3 paragraphs max). Be friendly but 
 
 Current page: ${page}`;
 
-		const aiResponse = await env.AI.run('@cf/meta/llama-4-scout-17b-16e-instruct', {
-			messages: [
-				{ role: 'system', content: systemPrompt },
-				...conversationHistory.map(msg => ({
-					role: msg.role,
-					content: msg.content
-				}))
-			],
-			stream: stream || false
-		});
+		// Call AI with timeout protection
+		let aiResponse: any;
+		try {
+			const aiPromise = env.AI.run('@cf/meta/llama-4-scout-17b-16e-instruct', {
+				messages: [
+					{ role: 'system', content: systemPrompt },
+					...conversationHistory.map(msg => ({
+						role: msg.role,
+						content: msg.content
+					}))
+				],
+				stream: stream || false
+			});
+
+			// Timeout after 30 seconds
+			const timeoutPromise = new Promise((_, reject) => {
+				setTimeout(() => reject(new Error('AI request timeout')), 30000);
+			});
+
+			aiResponse = await Promise.race([aiPromise, timeoutPromise]);
+		} catch (error) {
+			return handleAIError(error);
+		}
 
 		// Handle streaming responses
 		if (stream) {
@@ -301,30 +417,42 @@ Current page: ${page}`;
 						const trimmedHistory = conversationHistory.slice(-10);
 
 						// Store for 24 hours
-						await env.CHAT_HISTORY.put(
-							historyKey,
-							JSON.stringify(trimmedHistory),
-							{ expirationTtl: 86400 }
-						);
+						try {
+							await env.CHAT_HISTORY.put(
+								historyKey,
+								JSON.stringify(trimmedHistory),
+								{ expirationTtl: 86400 }
+							);
+						} catch (error) {
+							logError('Failed to save chat history', error);
+							// Continue even if save fails
+						}
 
 						controller.enqueue(encoder.encode('data: [DONE]\n\n'));
 						controller.close();
 
 					} catch (error) {
-						console.error('Streaming error:', error);
-						controller.error(error);
+						logError('Streaming error', error);
+						// Send error event to client
+						const encoder = new TextEncoder();
+						controller.enqueue(encoder.encode('data: {"error": "Stream error"}\n\n'));
+						controller.close();
 					}
 				}
 			});
 
-			return new Response(streamResponse, {
-				headers: {
-					...corsHeaders,
-					'Content-Type': 'text/event-stream',
-					'Cache-Control': 'no-cache',
-					'Connection': 'keep-alive'
-				}
+			const streamResponseHeaders = {
+				...corsHeaders,
+				'Content-Type': 'text/event-stream',
+				'Cache-Control': 'no-cache',
+				'Connection': 'keep-alive'
+			};
+
+			const streamResponseObj = new Response(streamResponse, {
+				headers: streamResponseHeaders
 			});
+
+			return applySecurityHeaders(streamResponseObj);
 		}
 
 		// Non-streaming fallback
@@ -337,15 +465,21 @@ Current page: ${page}`;
 		});
 
 		const trimmedHistory = conversationHistory.slice(-10);
-		await env.CHAT_HISTORY.put(
-			historyKey,
-			JSON.stringify(trimmedHistory),
-			{ expirationTtl: 86400 }
-		);
+		
+		try {
+			await env.CHAT_HISTORY.put(
+				historyKey,
+				JSON.stringify(trimmedHistory),
+				{ expirationTtl: 86400 }
+			);
+		} catch (error) {
+			logError('Failed to save chat history', error);
+			// Continue even if save fails
+		}
 
 		const wantsEstimate = false;
 
-		return new Response(JSON.stringify({
+		const nonStreamResponse = new Response(JSON.stringify({
 			reply: assistantMessage,
 			session,
 			intents: {
@@ -355,31 +489,47 @@ Current page: ${page}`;
 			headers: { ...corsHeaders, 'Content-Type': 'application/json' }
 		});
 
+		return applySecurityHeaders(nonStreamResponse);
+
 	} catch (error) {
-		console.error('Chat error:', error);
-		return new Response(JSON.stringify({
+		logError('Chat error', error);
+		const errorResponse = new Response(JSON.stringify({
 			error: 'Chat failed',
 			reply: 'I apologize, but I encountered an error. Please call (251) 423-5855 for immediate assistance.'
 		}), {
 			status: 500,
 			headers: { ...corsHeaders, 'Content-Type': 'application/json' }
 		});
+		return applySecurityHeaders(errorResponse);
 	}
 }
 
 async function handleChatHistory(
 	request: Request,
 	env: Env,
-	corsHeaders: Record<string, string>
+	origin: string | null
 ): Promise<Response> {
-	const url = new URL(request.url);
-	const session = url.searchParams.get('session');
-	const limit = parseInt(url.searchParams.get('limit') || '10');
+	// Validate origin
+	if (!isOriginAllowed(origin)) {
+		return handleOriginNotAllowed();
+	}
+	const corsHeaders = getCorsHeaders(origin);
 
-	if (!session) {
-		return new Response(JSON.stringify({ items: [] }), {
-			headers: { ...corsHeaders, 'Content-Type': 'application/json' }
-		});
+	const url = new URL(request.url);
+	const sessionParam = url.searchParams.get('session');
+	const limitParam = url.searchParams.get('limit');
+
+	// Validate query params
+	const validation = validateChatHistoryParams(sessionParam, limitParam);
+	if (!validation.valid) {
+		return handleValidationError(validation.errors!);
+	}
+
+	// Rate limit by session
+	const session = validation.session!;
+	const rateLimit = await checkRateLimit(env.CHAT_HISTORY, session, 'history', HISTORY_LIMIT);
+	if (!rateLimit.allowed) {
+		return handleRateLimitError(rateLimit.retryAfter!);
 	}
 
 	try {
@@ -387,13 +537,15 @@ async function handleChatHistory(
 		const history = await env.CHAT_HISTORY.get(historyKey, 'json') as ChatMessage[] | null;
 
 		if (!history) {
-			return new Response(JSON.stringify({ items: [] }), {
+			const notFound = new Response(JSON.stringify({ items: [] }), {
+				status: 404,
 				headers: { ...corsHeaders, 'Content-Type': 'application/json' }
 			});
+			return applySecurityHeaders(notFound);
 		}
 
 		// Convert to format frontend expects (question/answer pairs)
-		const items = [];
+		const items: Array<{ question: string; answer: string }> = [];
 		for (let i = 0; i < history.length; i += 2) {
 			if (history[i] && history[i + 1]) {
 				items.push({
@@ -403,31 +555,69 @@ async function handleChatHistory(
 			}
 		}
 
-		const recentItems = items.slice(-limit);
+		const recentItems = items.slice(-(validation.limit ?? 10));
 
-		return new Response(JSON.stringify({ items: recentItems }), {
+		const okResp = new Response(JSON.stringify({ items: recentItems }), {
 			headers: { ...corsHeaders, 'Content-Type': 'application/json' }
 		});
+		return applySecurityHeaders(okResp);
 
 	} catch (error) {
-		console.error('History error:', error);
-		return new Response(JSON.stringify({ items: [] }), {
+		logError('History error', error);
+		const errResp = new Response(JSON.stringify({ items: [] }), {
 			headers: { ...corsHeaders, 'Content-Type': 'application/json' }
 		});
+		return applySecurityHeaders(errResp);
 	}
 }
 
 async function handleEstimate(
 	request: Request,
 	env: Env,
-	corsHeaders: Record<string, string>
+	origin: string | null
 ): Promise<Response> {
+	// Validate origin
+	if (!isOriginAllowed(origin)) {
+		return handleOriginNotAllowed();
+	}
+	const corsHeaders = getCorsHeaders(origin);
+
 	if (request.method !== 'POST') {
-		return new Response('Method not allowed', { status: 405 });
+		return createErrorResponse(405, 'Method not allowed', 'Only POST requests are allowed', corsHeaders);
+	}
+
+	// Validate request size
+	const sizeCheck = validateRequestSize(request);
+	if (!sizeCheck.valid) {
+		return sizeCheck.error!;
+	}
+
+	// Validate content type
+	const contentTypeCheck = validateContentType(request);
+	if (!contentTypeCheck.valid) {
+		return contentTypeCheck.error!;
 	}
 
 	try {
-		const data = await request.json() as any;
+		// Parse JSON safely
+		const parseResult = await parseJsonSafely(request);
+		if (parseResult.error) {
+			return parseResult.error;
+		}
+		const data = parseResult.data as any;
+
+		// Validate payload
+		const validation = validateEstimatePayload(data);
+		if (!validation.valid) {
+			return handleValidationError(validation.errors!);
+		}
+
+		// Rate limit using session when present
+		const sessionId = (typeof data.session === 'string' && data.session) ? data.session : 'unknown';
+		const rateLimit = await checkRateLimit(env.CHAT_HISTORY, sessionId, 'estimate', ESTIMATE_LIMIT);
+		if (!rateLimit.allowed) {
+			return handleRateLimitError(rateLimit.retryAfter!);
+		}
 
 		const cf = getRequestCf(request);
 		const city = cf?.city ?? 'Unknown';
@@ -454,15 +644,12 @@ async function handleEstimate(
 			`${data.name} | ${data.phone} | ${data.email} | ${data.service} | ${data.message}`
 		).run();
 
-		return new Response(JSON.stringify({ success: true }), {
+		const okResp = new Response(JSON.stringify({ success: true }), {
 			headers: { ...corsHeaders, 'Content-Type': 'application/json' }
 		});
+		return applySecurityHeaders(okResp);
 
 	} catch (error) {
-		console.error('Estimate error:', error);
-		return new Response(JSON.stringify({ error: 'Failed to submit estimate' }), {
-			status: 500,
-			headers: { ...corsHeaders, 'Content-Type': 'application/json' }
-		});
+		return handleDatabaseError(error);
 	}
 }

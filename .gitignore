@@ -4,7 +4,6 @@ yarn-debug.log*
 yarn-error.log*
 lerna-debug.log*
 vitest.config.mts
-package.json
 worker-configuration.d.ts
 .DS_Store
 Thumbs.db
@@ -46,3 +45,4 @@ node_modules
 .wrangler
 CHANGES_SUMMARY.md
 public/.DS_Store
+.vscode
