@@ -1,0 +1,22 @@
+/* Simple progress bar style for autoplay time-left visualization */
+.autoplay-progress {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    height: 4px;
+    width: 100%;
+    background: rgba(255, 255, 255, 0.2);
+    overflow: hidden;
+}
+
+.autoplay-progress__bar {
+    height: 100%;
+    width: var(--autoplay-progress, 0%);
+    background: linear-gradient(90deg, rgb(238, 9, 9), rgb(117, 9, 9));
+    transition: width 120ms linear;
+}
+
+/* Optional reversed direction modifier */
+.autoplay-progress--reverse .autoplay-progress__bar {
+    transform: scaleX(-1);
+}

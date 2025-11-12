@@ -262,11 +262,11 @@ section
   position: absolute;
   top: calc(100% + 10px);
   right: 1rem;
-  background: #111;
+  background: rgb(17, 17, 17);
   color: var(--text-200);
   padding: 1rem;
   border-radius: 8px;
-  border: 1px solid #2e2e2e;
+  border: 1px solid rgb(46, 46, 46);
   box-shadow: 0 12px 32px rgba(0, 0, 0, .55);
   font-size: .95rem;
   line-height: 1.5;
@@ -317,7 +317,7 @@ body
     left: 0;
     right: 0;
     height: 2px;
-    background: #cfcfcf;
+    background: rgb(207, 207, 207);
     transition: all .3s ease;
   }
   .hamburger span:nth-child(1)
@@ -538,7 +538,7 @@ fieldset legend,
 .package-card li::before
 {
   content: '✓';
-  color: rgb(46, 204, 113);
+  color: rgb(204, 46, 46);
   left: 0;
   font-size: 1em;
   position: absolute;
@@ -1732,7 +1732,7 @@ header .hamburger { margin-left: 1.6rem; }
   top: 50%;
   transform: translateY(-50%);
   background: rgba(0, 0, 0, 0.5);
-  color: #fff;
+  color: rgb(255, 255, 255);
   border: none;
   border-radius: 50%;
   width: 48px;
@@ -1871,7 +1871,6 @@ header .hamburger { margin-left: 1.6rem; }
   }
 }
 
-/* === Header Icons Horizontal Layout === */
 header.site-header {
   display: flex;
   align-items: center;
@@ -1927,7 +1926,6 @@ header.site-header {
   }
 }
 
-/* === Swiper Carousel Styles === */
 .swiper {
   width: 100%;
   position: relative;
@@ -1980,7 +1978,6 @@ header.site-header {
   border-radius: var(--r-8);
 }
 
-/* === Crisp Header Icons === */
 .header-icons {
   display: inline-flex;
   gap: 10px;
@@ -1995,9 +1992,9 @@ header.site-header {
   width: 40px;
   height: 40px;
   border-radius: 12px;
-  background: #191919;
+  background: rgb(25, 25, 25);
   outline: none;
-  border: 1px solid #2a2a2a;
+  border: 1px solid rgb(42, 42, 42);
   transition: transform .12s ease, background .12s ease;
   cursor: pointer;
   text-decoration: none;
@@ -2012,7 +2009,7 @@ header.site-header {
 .icon-btn svg {
   width: 22px;
   height: 22px;
-  fill: #e5e5e5;
+  fill: rgb(229, 229, 229);
   display: block;
 }
 @media (max-width: 420px) {
@@ -2025,7 +2022,6 @@ header.site-header {
   }
 }
 
-/* === Swiper Arrow Styling === */
 .swiper-button-prev,
 .swiper-button-next {
   width: 44px;
@@ -2039,14 +2035,13 @@ header.site-header {
 .swiper-button-next:after {
   font-size: 18px;
   font-weight: 700;
-  color: #fff;
+  color: rgb(255, 255, 255);
 }
 .swiper-button-prev:hover,
 .swiper-button-next:hover {
   background: rgba(0, 0, 0, 0.75);
 }
 
-/* === Floating Chat Button === */
 .fab-chat {
   position: fixed;
   right: 18px;
@@ -2058,8 +2053,8 @@ header.site-header {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #E0102A;
-  color: #fff;
+  background: rgb(224, 16, 42);
+    color: rgb(255, 255, 255);
   font-weight: 800;
   font-size: 24px;
   text-decoration: none;
@@ -2074,13 +2069,12 @@ header.site-header {
   transform: translateY(0);
 }
 
-/* === Review Card Styling === */
 .review-card {
   max-width: 820px;
   width: 92%;
   margin: 0 auto;
   padding: 24px 24px 20px;
-  border: 1px solid #2a2a2a;
+  border: 1px solid rgb(42, 42, 42);
   border-radius: 22px;
   background: linear-gradient(180deg, rgba(255, 255, 255, 0.02), rgba(0, 0, 0, 0.05));
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.25) inset;
@@ -2089,13 +2083,12 @@ header.site-header {
   font-size: 1.15rem;
   line-height: 1.55;
   margin: 0 0 12px;
-  color: #e8e8e8;
+  color: rgb(232, 232, 232);
 }
 .review-meta {
   opacity: 0.8;
 }
 
-/* === Gallery Image Polish === */
 #gallery-swiper .swiper-slide img {
   display: block;
   width: 100%;
@@ -2103,23 +2096,21 @@ header.site-header {
   border-radius: 22px;
 }
 
-/* === Pagination Dots === */
 .swiper-pagination-bullet {
-  background: #666;
+  background: rgb(102, 102, 102);
   opacity: 0.7;
 }
 .swiper-pagination-bullet-active {
-  background: #1da1f2;
+  background: rgb(242, 29, 29);
   opacity: 1;
 }
 
-/* === Mobile Navigation === */
 #primary-nav {
   position: absolute;
   right: 12px;
   top: 60px;
-  background: #121212;
-  border: 1px solid #2a2a2a;
+  background: rgb(18, 18, 18);
+    border: 1px solid rgb(42, 42, 42);
   border-radius: 14px;
   padding: 10px 12px;
   z-index: 100;
@@ -2153,7 +2144,7 @@ header.site-header {
   text-decoration: none;
 }
 #primary-nav a:hover {
-  background: #1b1b1b;
+  background: rgb(27, 27, 27);
 }
 @media (min-width: 769px) {
   #primary-nav {
@@ -2161,7 +2152,6 @@ header.site-header {
   }
 }
 
-/* === Sticky Header with Shadow === */
 header.site-header {
   position: sticky;
   top: 0;
@@ -2170,7 +2160,6 @@ header.site-header {
   backdrop-filter: blur(6px);
 }
 
-/* === Reduced Motion Support === */
 @media (prefers-reduced-motion: reduce) {
   .fab-chat {
     transition: none;
@@ -2182,16 +2171,15 @@ header.site-header {
   }
 }
 
-/* === Responsive Google Maps Embed === */
 .map-embed {
   position: relative;
-  padding-bottom: 56.25%; /* 16:9 */
+  padding-bottom: 56.25%;
   height: 0;
   overflow: hidden;
   border-radius: 12px;
   max-width: 1200px;
   margin: 24px auto 0;
-  border: 1px solid #292929;
+  border: 1px solid rgb(41, 41, 41);
   box-shadow: 0 6px 24px rgba(0, 0, 0, 0.25);
 }
 .map-embed iframe {
@@ -2202,7 +2190,6 @@ header.site-header {
   border: 0;
 }
 
-/* === Updated Mobile Navigation with data-open === */
 #primary-nav[data-open="false"] {
   display: none;
 }
@@ -2210,7 +2197,6 @@ header.site-header {
   display: block;
 }
 
-/* === Hamburger to X Animation === */
 .nav-toggle {
   position: relative;
 }
@@ -2229,16 +2215,13 @@ header.site-header {
   transform-origin: center;
 }
 
-/* === Z-index fix for header and toggle === */
 .site-header,
 .nav-toggle {
   position: relative;
   z-index: 101;
 }
 
-/* === Remove any old data-collapsed rules === */
 #primary-nav[data-collapsed="true"],
 #primary-nav[data-collapsed="false"] {
-  /* Override old attribute behavior */
   display: block;
 }

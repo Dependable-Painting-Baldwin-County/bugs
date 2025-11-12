@@ -27,7 +27,6 @@ export function initHeader() {
     isOpen ? closeMenu() : openMenu();
   });
 
-  // Escape to close
   document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape') closeMenu();
   });
